@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NurseConnect — South African Nurse Recruitment Agency</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0D1F3C;
+      --white: #F8FAFC;
+      --coral: #E8472A;
+      --sage: #7BA89A;
+      --gray: #94a3b8;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--navy); overflow-x: hidden; }
+
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 4rem;
+      background: rgba(13,31,60,0.92); backdrop-filter: blur(8px);
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--white); }
+    .logo span { color: var(--coral); }
+    nav ul { display: flex; gap: 2rem; list-style: none; }
+    nav ul a { color: var(--white); font-size: .9rem; font-weight: 500; transition: color .2s; }
+    nav ul a:hover { color: var(--sage); }
+    .nav-cta {
+      background: var(--coral); color: var(--white) !important;
+      padding: .45rem 1.2rem; border-radius: 4px; font-weight: 600 !important;
+    }
+    .nav-cta:hover { background: #c73b21; color: var(--white) !important; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid; grid-template-columns: 1fr 1fr;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-left {
+      background: var(--navy);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 5rem 5rem 5rem;
+      clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+      z-index: 2; position: relative;
+    }
+    .hero-right {
+      background: var(--sage);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 5rem 5rem 7rem;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-block; background: var(--coral);
+      color: var(--white); font-size: .75rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: .3rem .8rem; border-radius: 2px; margin-bottom: 1.2rem;
+    }
+
+    .hero-left h1 { font-size: clamp(2.2rem, 3.5vw, 3.4rem); color: var(--white); line-height: 1.15; margin-bottom: 1rem; }
+    .hero-right h1 { font-size: clamp(2.2rem, 3.5vw, 3.4rem); color: var(--navy); line-height: 1.15; margin-bottom: 1rem; }
+
+    .hero-left p { color: #a8bbd4; font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; max-width: 340px; }
+    .hero-right p { color: var(--navy); opacity: .8; font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; max-width: 340px; }
+
+    .btn {
+      display: inline-block; padding: .85rem 2rem;
+      border-radius: 4px; font-weight: 600; font-size: .95rem;
+      transition: transform .15s, box-shadow .15s;
+      cursor: pointer; border: none;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+    .btn-coral { background: var(--coral); color: var(--white); }
+    .btn-white { background: var(--white); color: var(--navy); }
+
+    .hero-tagline {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      z-index: 10; text-align: center; white-space: nowrap;
+    }
+    .hero-tagline p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 1.6vw, 1.35rem);
+      color: var(--white); background: var(--coral);
+      padding: .6rem 2rem; border-radius: 50px;
+      letter-spacing: .02em;
+    }
+
+    /* ── SERVICES STRIP ── */
+    .services {
+      background: var(--navy); display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .service-item {
+      padding: 2.5rem 2rem; border-right: 1px solid rgba(255,255,255,.08);
+      transition: background .2s;
+    }
+    .service-item:last-child { border-right: none; }
+    .service-item:hover { background: rgba(255,255,255,.04); }
+    .service-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .service-item h3 { font-size: 1rem; color: var(--white); margin-bottom: .5rem; }
+    .service-item p { font-size: .85rem; color: var(--gray); line-height: 1.6; }
+
+    /* ── STATS ── */
+    .stats {
+      background: var(--white); display: grid; grid-template-columns: repeat(4,1fr);
+      padding: 4rem; gap: 2rem; border-bottom: 1px solid #e2e8f0;
+    }
+    .stat { text-align: center; }
+    .stat-number { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--coral); }
+    .stat-label { font-size: .85rem; color: var(--gray); margin-top: .3rem; text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 5rem 4rem; }
+    .section-tag { font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--coral); font-weight: 600; margin-bottom: .6rem; }
+    .section-title { font-size: clamp(1.8rem, 2.5vw, 2.6rem); color: var(--navy); margin-bottom: 1rem; max-width: 560px; line-height: 1.25; }
+    .section-sub { color: var(--gray); max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: #f1f5f9; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem; }
+    .testimonial-card {
+      background: var(--white); padding: 2rem; border-radius: 8px;
+      border-left: 4px solid var(--sage); position: relative;
+    }
+    .testimonial-card blockquote { font-size: .95rem; line-height: 1.7; color: #334155; margin-bottom: 1.2rem; }
+    .testimonial-card blockquote::before { content: '\201C'; font-size: 2.5rem; color: var(--sage); line-height: 0; vertical-align: -.6rem; margin-right: .2rem; }
+    .t-author { font-weight: 600; font-size: .85rem; color: var(--navy); }
+    .t-role { font-size: .8rem; color: var(--gray); }
+
+    /* ── JOB LISTINGS ── */
+    .jobs { background: var(--white); }
+    .jobs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem; }
+    .job-card {
+      border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.8rem;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .job-card:hover { box-shadow: 0 8px 30px rgba(13,31,60,.1); transform: translateY(-3px); }
+    .job-type {
+      display: inline-block; font-size: .72rem; font-weight: 600;
+      letter-spacing: .07em; text-transform: uppercase;
+      padding: .25rem .7rem; border-radius: 3px; margin-bottom: 1rem;
+    }
+    .type-full { background: #e0f2fe; color: #0369a1; }
+    .type-contract { background: #fef3c7; color: #92400e; }
+    .type-agency { background: #ede9fe; color: #6d28d9; }
+    .job-card h3 { font-size: 1.05rem; margin-bottom: .4rem; color: var(--navy); }
+    .job-card .location { font-size: .85rem; color: var(--gray); margin-bottom: 1.2rem; }
+    .job-card .location::before { content: '📍 '; }
+    .job-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .job-meta span { font-size: .8rem; color: #475569; background: #f8fafc; padding: .2rem .6rem; border-radius: 3px; border: 1px solid #e2e8f0; }
+    .btn-outline {
+      border: 2px solid var(--navy); color: var(--navy); background: transparent;
+      padding: .55rem 1.4rem; border-radius: 4px; font-weight: 600; font-size: .85rem;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-outline:hover { background: var(--navy); color: var(--white); }
+
+    /* ── HOME CARE ── */
+    .homecare {
+      background: var(--navy);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+    }
+    .homecare-content h2 { color: var(--white); margin-bottom: 1rem; }
+    .homecare-content p { color: #a8bbd4; line-height: 1.7; margin-bottom: 2rem; }
+    .homecare-features { list-style: none; display: flex; flex-direction: column; gap: .8rem; margin-bottom: 2rem; }
+    .homecare-features li { color: #a8bbd4; font-size: .9rem; display: flex; align-items: center; gap: .6rem; }
+    .homecare-features li::before { content: ''; width: 8px; height: 8px; background: var(--sage); border-radius: 50%; flex-shrink: 0; }
+    .homecare-visual {
+      background: rgba(123,168,154,.12); border-radius: 12px;
+      padding: 3rem; border: 1px solid rgba(123,168,154,.25);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    }
+    .care-stat {
+      background: rgba(255,255,255,.05); border-radius: 8px; padding: 1.5rem;
+      text-align: center;
+    }
+    .care-stat .num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--sage); }
+    .care-stat .lbl { font-size: .75rem; color: var(--gray); margin-top: .3rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070f1e; color: var(--gray);
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; padding: 4rem;
+    }
+    .footer-brand .logo { font-size: 1.3rem; display: block; margin-bottom: 1rem; }
+    .footer-brand p { font-size: .85rem; line-height: 1.7; max-width: 260px; }
+    footer h4 { font-family: 'Inter', sans-serif; font-size: .8rem; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--white); margin-bottom: 1.2rem; }
+    footer ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    footer ul li a { font-size: .85rem; color: var(--gray); transition: color .2s; }
+    footer ul li a:hover { color: var(--sage); }
+    .footer-bottom {
+      background: #070f1e; border-top: 1px solid rgba(255,255,255,.06);
+      padding: 1.5rem 4rem; display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-bottom p { font-size: .8rem; color: #475569; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 2rem; }
+      nav ul { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { clip-path: none; padding: 7rem 2rem 3rem; }
+      .hero-right { padding: 3rem 2rem 5rem; }
+      .hero-tagline { bottom: 1rem; }
+      .services, .stats, .testimonials-grid, .jobs-grid, .homecare, footer {
+        grid-template-columns: 1fr;
+      }
+      section, .stats, footer { padding: 3rem 2rem; }
+      .footer-bottom { padding: 1rem 2rem; flex-direction: column; gap: .5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Nurse<span>Connect</span></div>
+    <ul>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#jobs">Jobs</a></li>
+      <li><a href="#homecare">Home Care</a></li>
+      <li><a href="#contact" class="nav-cta">Post a Job</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-left">
+      <span class="hero-badge">For Nurses</span>
+      <h1>Your Next Great Role Starts Here</h1>
+      <p>Access hundreds of public, private, and agency nursing roles across South Africa. We match your SANC registration to opportunities that fit your life.</p>
+      <a href="#jobs" class="btn btn-coral">Browse Nursing Jobs</a>
+    </div>
+    <div class="hero-right">
+      <span class="hero-badge">For Employers</span>
+      <h1>Hire Qualified Nurses Fast</h1>
+      <p>From urgent locum shifts to permanent placements, we supply SANC-registered, experienced nursing professionals across all nine provinces.</p>
+      <a href="#contact" class="btn btn-white">Request Staff Now</a>
+    </div>
+    <div class="hero-tagline">
+      <p>Connecting Care — One Placement at a Time</p>
+    </div>
+  </section>
+
+  <!-- SERVICES STRIP -->
+  <div class="services" id="services">
+    <div class="service-item">
+      <div class="service-icon">🏥</div>
+      <h3>Permanent Placement</h3>
+      <p>Long-term nursing roles across public hospitals, Mediclinic, Netcare, Life Healthcare, and private clinics nationwide.</p>
+    </div>
+    <div class="service-item">
+      <div class="service-icon">⚡</div>
+      <h3>Locum &amp; Relief Shifts</h3>
+      <p>24/7 rapid response locum staffing for last-minute ward cover and emergency relief across SA facilities.</p>
+    </div>
+    <div class="service-item">
+      <div class="service-icon">🏡</div>
+      <h3>Home Care</h3>
+      <p>Skilled nurses placed in community and domiciliary settings across South Africa's urban and rural areas.</p>
+    </div>
+    <div class="service-item">
+      <div class="service-icon">🌍</div>
+      <h3>International Recruitment</h3>
+      <p>SANC registration guidance and placement support for internationally trained nurses seeking to work in South Africa.</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-number">3,500+</div>
+      <div class="stat-label">Nurses Placed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">180+</div>
+      <div class="stat-label">Partner Facilities</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">97%</div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">48hr</div>
+      <div class="stat-label">Average Fill Time</div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials" id="testimonials">
+    <div class="section-tag">Testimonials</div>
+    <h2 class="section-title">Trusted by Nurses &amp; Facilities Across SA</h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <blockquote>NurseConnect placed me in an ICU role at a Netcare facility within a week of registering. The process was smooth and my consultant genuinely listened to what I needed.</blockquote>
+        <div class="t-author">Thandi M.</div>
+        <div class="t-role">ICU Staff Nurse, Johannesburg</div>
+      </div>
+      <div class="testimonial-card">
+        <blockquote>We filled three urgent ward vacancies over a long weekend. Responsive, professional, and the nurses they sent were outstanding — all fully SANC registered.</blockquote>
+        <div class="t-author">Dr. Johan K.</div>
+        <div class="t-role">Director of Nursing, Mediclinic Gauteng</div>
+      </div>
+      <div class="testimonial-card">
+        <blockquote>As a Zimbabwean-trained nurse, their SANC registration guidance was invaluable. I was placed within weeks and finally feel like my career is moving forward.</blockquote>
+        <div class="t-author">Rutendo M.</div>
+        <div class="t-role">Paediatric Nurse, Cape Town</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOB LISTINGS -->
+  <section class="jobs" id="jobs">
+    <div class="section-tag">Latest Opportunities</div>
+    <h2 class="section-title">Find Your Next Nursing Role</h2>
+    <p class="section-sub">Roles updated daily across all nine provinces. Filter by specialty, location, or contract type.</p>
+    <div class="jobs-grid">
+      <div class="job-card">
+        <span class="job-type type-full">Full Time</span>
+        <h3>Senior Staff Nurse — Casualty</h3>
+        <p class="location">Netcare Milpark Hospital, Johannesburg</p>
+        <div class="job-meta">
+          <span>Category R</span><span>R28,000–R36,000/mo</span><span>Immediate Start</span>
+        </div>
+        <button class="btn-outline">View &amp; Apply</button>
+      </div>
+      <div class="job-card">
+        <span class="job-type type-contract">Contract</span>
+        <h3>Theatre Scrub Nurse</h3>
+        <p class="location">Mediclinic Constantiaberg, Cape Town</p>
+        <div class="job-meta">
+          <span>Specialist</span><span>R220–R280/hr</span><span>3 Months+</span>
+        </div>
+        <button class="btn-outline">View &amp; Apply</button>
+      </div>
+      <div class="job-card">
+        <span class="job-type type-agency">Agency</span>
+        <h3>Community District Nurse</h3>
+        <p class="location">Department of Health, KwaZulu-Natal</p>
+        <div class="job-meta">
+          <span>Category P</span><span>R22,000–R30,000/mo</span><span>Flexible Days</span>
+        </div>
+        <button class="btn-outline">View &amp; Apply</button>
+      </div>
+      <div class="job-card">
+        <span class="job-type type-full">Full Time</span>
+        <h3>Neonatal Nurse Specialist</h3>
+        <p class="location">Life Entabeni Hospital, Durban</p>
+        <div class="job-meta">
+          <span>Specialist</span><span>R32,000–R42,000/mo</span><span>Permanent</span>
+        </div>
+        <button class="btn-outline">View &amp; Apply</button>
+      </div>
+      <div class="job-card">
+        <span class="job-type type-contract">Contract</span>
+        <h3>ICU Staff Nurse</h3>
+        <p class="location">Groote Schuur Hospital, Cape Town</p>
+        <div class="job-meta">
+          <span>Category R</span><span>R240–R300/hr</span><span>Night Shifts</span>
+        </div>
+        <button class="btn-outline">View &amp; Apply</button>
+      </div>
+      <div class="job-card">
+        <span class="job-type type-agency">Agency</span>
+        <h3>Mental Health Nurse</h3>
+        <p class="location">Akeso Clinic, Pretoria</p>
+        <div class="job-meta">
+          <span>Registered</span><span>R200–R260/hr</span><span>Days &amp; Nights</span>
+        </div>
+        <button class="btn-outline">View &amp; Apply</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOME CARE -->
+  <section class="homecare" id="homecare">
+    <div class="homecare-content">
+      <div class="section-tag">Home Care</div>
+      <h2 class="section-title" style="color:var(--white)">Compassionate Care,<br>In the Comfort of Home</h2>
+      <p>We place experienced community nurses for post-operative recovery, chronic condition management, palliative care, and daily living support — giving South African patients the dignity of care at home.</p>
+      <ul class="homecare-features">
+        <li>Post-surgical and wound care</li>
+        <li>Palliative and end-of-life nursing</li>
+        <li>Chronic disease management</li>
+        <li>IV therapy and medication administration</li>
+        <li>Dementia and mental health support</li>
+      </ul>
+      <a href="#contact" class="btn btn-coral">Enquire About Home Care</a>
+    </div>
+    <div class="homecare-visual">
+      <div class="care-stat"><div class="num">600+</div><div class="lbl">Home Care Nurses</div></div>
+      <div class="care-stat"><div class="num">24/7</div><div class="lbl">On-Call Support</div></div>
+      <div class="care-stat"><div class="num">9</div><div class="lbl">Provinces Covered</div></div>
+      <div class="care-stat"><div class="num">SANC</div><div class="lbl">Registered &amp; Compliant</div></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="footer-brand">
+      <span class="logo">Nurse<span style="color:var(--coral)">Connect</span></span>
+      <p>South Africa's trusted nursing recruitment agency — connecting SANC-registered nurses with leading public and private healthcare facilities nationwide since 2025.</p>
+    </div>
+    <div>
+      <h4>For Nurses</h4>
+      <ul>
+        <li><a href="#">Browse All Jobs</a></li>
+        <li><a href="#">Register With Us</a></li>
+        <li><a href="#">Refer a Friend</a></li>
+        <li><a href="#">Career Advice</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>For Employers</h4>
+      <ul>
+        <li><a href="#">Post a Vacancy</a></li>
+        <li><a href="#">Request Locum Staff</a></li>
+        <li><a href="#">Home Care Services</a></li>
+        <li><a href="#">International Hire</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Compliance &amp; Quality</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <p>© 2025 NurseConnect (Pty) Ltd. All rights reserved. Registered in South Africa.</p>
+    <p>SANC Compliant · CIPC Registered · APSO Member</p>
+  </div>
+
+</body>
+</html>
