@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
+from core.permissions import IsNurseOrAdmin, IsAdminOrReadOnly
 from .models import Job, JobApplication
 from .serializers import JobSerializer, JobApplicationSerializer
 
@@ -30,7 +31,7 @@ class JobDetailView(APIView):
 
 
 class JobApplicationView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsNurseOrAdmin]
 
     def get(self, request):
         applications = JobApplication.objects.filter(nurse__user=request.user)

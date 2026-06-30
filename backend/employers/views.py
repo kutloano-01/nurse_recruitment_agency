@@ -3,12 +3,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from core.permissions import IsEmployerOrAdmin, IsEmployer
 from .models import EmployerProfile, StaffingRequest
 from .serializers import EmployerProfileSerializer, StaffingRequestSerializer
 
 
 class EmployerProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsEmployerOrAdmin]
 
     def get(self, request):
         profile = get_object_or_404(EmployerProfile, user=request.user)
@@ -25,7 +26,7 @@ class EmployerProfileView(APIView):
 
 
 class StaffingRequestView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsEmployer]
 
     def get(self, request):
         profile = get_object_or_404(EmployerProfile, user=request.user)

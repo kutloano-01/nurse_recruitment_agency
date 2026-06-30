@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from core.permissions import IsNurseOrAdmin, IsNurse
 from .models import NurseProfile, NurseDocument, NurseAvailability
 from .serializers import (
     NurseProfileSerializer, NurseRegistrationSerializer,
@@ -11,7 +12,7 @@ from .serializers import (
 
 
 class NurseProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsNurseOrAdmin]
 
     def get(self, request):
         profile = get_object_or_404(NurseProfile, user=request.user)
@@ -36,7 +37,7 @@ class NurseProfileView(APIView):
 
 
 class NurseDocumentView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsNurse]
 
     def post(self, request):
         profile = get_object_or_404(NurseProfile, user=request.user)
@@ -48,7 +49,7 @@ class NurseDocumentView(APIView):
 
 
 class NurseAvailabilityView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsNurse]
 
     def get(self, request):
         profile = get_object_or_404(NurseProfile, user=request.user)
