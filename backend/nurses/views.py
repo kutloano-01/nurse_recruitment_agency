@@ -8,7 +8,7 @@ from core.emails import send_nurse_registration_confirmation, send_nurse_registr
 from .models import NurseProfile, NurseDocument, NurseAvailability
 from .serializers import (
     NurseProfileSerializer, NurseRegistrationSerializer,
-    NurseDocumentSerializer, NurseAvailabilitySerializer
+    NurseProfileUpdateSerializer, NurseDocumentSerializer, NurseAvailabilitySerializer
 )
 
 
@@ -32,7 +32,7 @@ class NurseProfileView(APIView):
 
     def patch(self, request):
         profile = get_object_or_404(NurseProfile, user=request.user)
-        serializer = NurseRegistrationSerializer(profile, data=request.data, partial=True)
+        serializer = NurseProfileUpdateSerializer(profile, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(NurseProfileSerializer(profile).data)
