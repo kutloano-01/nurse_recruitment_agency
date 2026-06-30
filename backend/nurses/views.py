@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from core.permissions import IsNurseOrAdmin, IsNurse
+from core.emails import send_nurse_registration_confirmation, send_nurse_registration_admin_notification
 from .models import NurseProfile, NurseDocument, NurseAvailability
 from .serializers import (
     NurseProfileSerializer, NurseRegistrationSerializer,
@@ -24,6 +25,8 @@ class NurseProfileView(APIView):
         serializer = NurseRegistrationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             profile = serializer.save()
+            send_nurse_registration_confirmation(request.user, profile)
+            send_nurse_registration_admin_notification(request.user, profile)
             return Response(NurseProfileSerializer(profile).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

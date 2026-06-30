@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from core.permissions import IsEmployerOrAdmin, IsEmployer
+from core.emails import send_employer_registration_confirmation, send_employer_registration_admin_notification
 from .models import EmployerProfile, StaffingRequest
 from .serializers import EmployerProfileSerializer, StaffingRequestSerializer
 
@@ -21,6 +22,8 @@ class EmployerProfileView(APIView):
         serializer = EmployerProfileSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             profile = serializer.save()
+            send_employer_registration_confirmation(request.user, profile)
+            send_employer_registration_admin_notification(request.user, profile)
             return Response(EmployerProfileSerializer(profile).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
