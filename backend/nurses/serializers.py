@@ -43,6 +43,20 @@ class NurseAvailabilitySerializer(serializers.ModelSerializer):
         model = NurseAvailability
         fields = ['id', 'day', 'shift']
 
+    def validate(self, data):
+        request = self.context.get('request')
+        if request and hasattr(request.user, 'nurse_profile'):
+            nurse = request.user.nurse_profile
+            if NurseAvailability.objects.filter(
+                nurse=nurse,
+                day=data.get('day'),
+                shift=data.get('shift')
+            ).exists():
+                raise serializers.ValidationError(
+                    'This availability slot already exists.'
+                )
+        return data
+
 
 class NurseProfileSerializer(serializers.ModelSerializer):
     documents = NurseDocumentSerializer(many=True, read_only=True)
