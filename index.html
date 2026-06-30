@@ -31,12 +31,34 @@
     }
     .logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--white); }
     .logo span { color: var(--coral); }
-    nav ul { display: flex; gap: 2rem; list-style: none; }
-    nav ul a { color: var(--white); font-size: .9rem; font-weight: 500; transition: color .2s; }
-    nav ul a:hover { color: var(--sage); }
+    nav > ul { display: flex; gap: 0; list-style: none; align-items: center; }
+    nav > ul > li { position: relative; }
+    nav > ul > li > a {
+      color: var(--white); font-size: .9rem; font-weight: 500;
+      transition: color .2s; padding: .6rem 1.2rem; display: block;
+    }
+    nav > ul > li > a:hover { color: var(--sage); }
+
+    /* dropdown */
+    .dropdown { position: relative; }
+    .dropdown-menu {
+      display: none; position: absolute; top: calc(100% + .5rem); left: 0;
+      background: var(--navy); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 6px; min-width: 200px; padding: .5rem 0;
+      box-shadow: 0 12px 30px rgba(0,0,0,.3);
+    }
+    .dropdown-menu a {
+      display: block; padding: .55rem 1.2rem;
+      font-size: .85rem; color: #a8bbd4; transition: all .15s;
+    }
+    .dropdown-menu a:hover { color: var(--white); background: rgba(255,255,255,.05); }
+    .dropdown:hover .dropdown-menu { display: block; }
+    .dropdown > a::after { content: ' ▾'; font-size: .7rem; opacity: .7; }
+
     .nav-cta {
       background: var(--coral); color: var(--white) !important;
       padding: .45rem 1.2rem; border-radius: 4px; font-weight: 600 !important;
+      margin-left: .8rem;
     }
     .nav-cta:hover { background: #c73b21; color: var(--white) !important; }
 
@@ -108,18 +130,27 @@
     }
     .service-item:last-child { border-right: none; }
     .service-item:hover { background: rgba(255,255,255,.04); }
-    .service-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+    .service-icon { width: 40px; height: 40px; margin-bottom: 1rem; color: var(--sage); }
     .service-item h3 { font-size: 1rem; color: var(--white); margin-bottom: .5rem; }
     .service-item p { font-size: .85rem; color: var(--gray); line-height: 1.6; }
 
-    /* ── STATS ── */
-    .stats {
+    /* ── TRUST BAR ── */
+    .trust-bar {
       background: var(--white); display: grid; grid-template-columns: repeat(4,1fr);
-      padding: 4rem; gap: 2rem; border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
     }
-    .stat { text-align: center; }
-    .stat-number { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--coral); }
-    .stat-label { font-size: .85rem; color: var(--gray); margin-top: .3rem; text-transform: uppercase; letter-spacing: .06em; }
+    .trust-item {
+      padding: 2.5rem 2rem; display: flex; align-items: flex-start; gap: 1rem;
+      border-right: 1px solid #e2e8f0;
+    }
+    .trust-item:last-child { border-right: none; }
+    .trust-check {
+      width: 36px; height: 36px; background: #ecfdf5; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: #16a34a; font-size: 1rem; font-weight: 700;
+    }
+    .trust-item h4 { font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 600; color: var(--navy); margin-bottom: .3rem; }
+    .trust-item p { font-size: .82rem; color: var(--gray); line-height: 1.5; }
 
     /* ── SECTION SHARED ── */
     section { padding: 5rem 4rem; }
@@ -127,19 +158,70 @@
     .section-title { font-size: clamp(1.8rem, 2.5vw, 2.6rem); color: var(--navy); margin-bottom: 1rem; max-width: 560px; line-height: 1.25; }
     .section-sub { color: var(--gray); max-width: 520px; line-height: 1.7; margin-bottom: 2.5rem; }
 
-    /* ── TESTIMONIALS ── */
-    .testimonials { background: #f1f5f9; }
-    .testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem; }
-    .testimonial-card {
-      background: var(--white); padding: 2rem; border-radius: 8px;
-      border-left: 4px solid var(--sage); position: relative;
+    /* ── HOW WE VERIFY ── */
+    .verify {
+      background: var(--navy);
     }
-    .testimonial-card blockquote { font-size: .95rem; line-height: 1.7; color: #334155; margin-bottom: 1.2rem; }
-    .testimonial-card blockquote::before { content: '\201C'; font-size: 2.5rem; color: var(--sage); line-height: 0; vertical-align: -.6rem; margin-right: .2rem; }
-    .t-author { font-weight: 600; font-size: .85rem; color: var(--navy); }
-    .t-role { font-size: .8rem; color: var(--gray); }
+    .verify .section-title { color: var(--white); max-width: 640px; }
+    .verify .section-sub { max-width: 580px; }
+    .verify-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem;
+    }
+    .verify-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px; padding: 2rem;
+      transition: background .2s;
+    }
+    .verify-card:hover { background: rgba(255,255,255,.07); }
+    .verify-icon {
+      width: 44px; height: 44px; background: rgba(123,168,154,.15);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.2rem; color: var(--sage);
+    }
+    .verify-icon svg { width: 22px; height: 22px; }
+    .verify-card h3 { font-size: 1rem; color: var(--white); margin-bottom: .5rem; }
+    .verify-card p { font-size: .85rem; color: var(--gray); line-height: 1.6; }
 
-    /* ── JOB LISTINGS ── */
+    /* ── WHY CHOOSE US ── */
+    .why { background: #f1f5f9; }
+    .why-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+    .why-card {
+      background: var(--white); padding: 2rem; border-radius: 8px;
+      border-top: 3px solid var(--sage);
+      transition: box-shadow .2s, transform .2s;
+    }
+    .why-card:hover { box-shadow: 0 8px 30px rgba(13,31,60,.08); transform: translateY(-3px); }
+    .why-card-icon { width: 40px; height: 40px; margin-bottom: 1rem; color: var(--sage); }
+    .why-card h3 { font-size: 1rem; color: var(--navy); margin-bottom: .5rem; }
+    .why-card p { font-size: .875rem; color: var(--gray); line-height: 1.7; }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works { background: var(--white); }
+    .how-it-works .section-title { max-width: 100%; }
+    .hiw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3rem; }
+    .hiw-col h3 {
+      font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--white); background: var(--navy);
+      display: inline-block; padding: .35rem 1rem; border-radius: 3px; margin-bottom: 2rem;
+    }
+    .hiw-col.employers h3 { background: var(--sage); color: var(--navy); }
+    .hiw-step { display: flex; gap: 1.2rem; margin-bottom: 1.8rem; align-items: flex-start; }
+    .hiw-step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .9rem;
+    }
+    .hiw-col.nurses .step-num { background: var(--navy); color: var(--white); }
+    .hiw-col.employers .step-num { background: var(--sage); color: var(--navy); }
+    .hiw-step-content h4 { font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 600; color: var(--navy); margin-bottom: .3rem; }
+    .hiw-step-content p { font-size: .85rem; color: var(--gray); line-height: 1.6; }
+    .hiw-divider {
+      width: 1px; background: #e2e8f0;
+      grid-row: 1; grid-column: auto;
+      display: none;
+    }
     .jobs { background: var(--white); }
     .jobs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem; }
     .job-card {
@@ -157,7 +239,8 @@
     .type-agency { background: #ede9fe; color: #6d28d9; }
     .job-card h3 { font-size: 1.05rem; margin-bottom: .4rem; color: var(--navy); }
     .job-card .location { font-size: .85rem; color: var(--gray); margin-bottom: 1.2rem; }
-    .job-card .location::before { content: '📍 '; }
+    .job-card .location { display: flex; align-items: center; gap: .4rem; }
+    .job-card .location svg { width: 13px; height: 13px; flex-shrink: 0; color: var(--gray); }
     .job-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
     .job-meta span { font-size: .8rem; color: #475569; background: #f8fafc; padding: .2rem .6rem; border-radius: 3px; border: 1px solid #e2e8f0; }
     .btn-outline {
@@ -208,6 +291,294 @@
     }
     .footer-bottom p { font-size: .8rem; color: #475569; }
 
+    /* ── NURSE REGISTRATION MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(7,15,30,.75); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--white); border-radius: 12px;
+      width: 100%; max-width: 560px; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      box-shadow: 0 24px 60px rgba(0,0,0,.3);
+    }
+
+    .modal-header {
+      padding: 2rem 2rem 0;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .modal-header h2 { font-size: 1.5rem; color: var(--navy); }
+    .modal-header p { font-size: .85rem; color: var(--gray); margin-top: .3rem; }
+    .modal-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--gray); padding: .25rem; line-height: 1;
+      transition: color .2s; flex-shrink: 0;
+    }
+    .modal-close:hover { color: var(--navy); }
+
+    /* progress bar */
+    .modal-progress { padding: 1.5rem 2rem 0; }
+    .progress-steps { display: flex; align-items: center; gap: 0; margin-bottom: .6rem; }
+    .progress-step {
+      display: flex; align-items: center; flex: 1;
+    }
+    .progress-step:last-child { flex: 0; }
+    .step-circle {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; transition: all .3s;
+      border: 2px solid #e2e8f0; background: var(--white); color: var(--gray);
+    }
+    .step-circle.active { border-color: var(--coral); background: var(--coral); color: var(--white); }
+    .step-circle.done { border-color: var(--sage); background: var(--sage); color: var(--white); }
+    .step-line { flex: 1; height: 2px; background: #e2e8f0; transition: background .3s; }
+    .step-line.done { background: var(--sage); }
+    .progress-labels { display: flex; justify-content: space-between; }
+    .progress-labels span { font-size: .7rem; color: var(--gray); text-align: center; flex: 1; }
+    .progress-labels span.active { color: var(--coral); font-weight: 600; }
+    .progress-labels span.done { color: var(--sage); font-weight: 600; }
+
+    /* form */
+    .modal-body { padding: 1.5rem 2rem 2rem; }
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label {
+      display: block; font-size: .8rem; font-weight: 600;
+      color: var(--navy); margin-bottom: .4rem;
+    }
+    .form-group label .req { color: var(--coral); }
+    .form-group input,
+    .form-group select {
+      width: 100%; padding: .65rem .9rem;
+      border: 1.5px solid #e2e8f0; border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: .875rem;
+      color: var(--navy); background: var(--white);
+      transition: border-color .2s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--navy); }
+    .form-group input.error,
+    .form-group select.error { border-color: var(--coral); }
+    .field-error { font-size: .75rem; color: var(--coral); margin-top: .3rem; display: none; }
+    .field-error.visible { display: block; }
+
+    /* document upload */
+    .doc-upload-grid { display: flex; flex-direction: column; gap: .8rem; }
+    .doc-upload-item {
+      border: 1.5px dashed #e2e8f0; border-radius: 8px;
+      padding: 1rem 1.2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: border-color .2s;
+    }
+    .doc-upload-item:hover { border-color: var(--sage); }
+    .doc-upload-item.uploaded { border-color: var(--sage); background: #f0faf7; border-style: solid; }
+    .doc-info h4 { font-size: .85rem; font-weight: 600; color: var(--navy); }
+    .doc-info p { font-size: .75rem; color: var(--gray); margin-top: .15rem; }
+    .doc-info .doc-required { color: var(--coral); font-size: .7rem; font-weight: 600; }
+    .doc-upload-btn {
+      background: none; border: 1.5px solid #e2e8f0; border-radius: 4px;
+      padding: .35rem .8rem; font-size: .78rem; font-weight: 600;
+      color: var(--navy); cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .doc-upload-btn:hover { border-color: var(--navy); }
+    .doc-upload-btn.uploaded { border-color: var(--sage); color: var(--sage); }
+    .doc-filename { font-size: .72rem; color: var(--sage); margin-top: .2rem; }
+
+    /* modal footer */
+    .modal-footer {
+      padding: 1rem 2rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid #f1f5f9;
+    }
+    .btn-back {
+      background: none; border: 1.5px solid #e2e8f0; color: var(--navy);
+      padding: .65rem 1.4rem; border-radius: 6px; font-weight: 600;
+      font-size: .875rem; cursor: pointer; transition: all .2s;
+    }
+    .btn-back:hover { border-color: var(--navy); }
+    .btn-next {
+      background: var(--coral); color: var(--white);
+      padding: .65rem 1.8rem; border-radius: 6px; font-weight: 600;
+      font-size: .875rem; cursor: pointer; border: none; transition: all .2s;
+    }
+    .btn-next:hover { background: #c73b21; }
+    .btn-next:disabled { background: var(--gray); cursor: not-allowed; }
+
+    /* success screen */
+    .modal-success {
+      display: none; padding: 3rem 2rem;
+      text-align: center; flex-direction: column; align-items: center;
+    }
+    .modal-success.active { display: flex; }
+    .success-icon {
+      width: 64px; height: 64px; background: #ecfdf5; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem; color: #16a34a;
+    }
+    .modal-success h2 { font-size: 1.6rem; color: var(--navy); margin-bottom: .8rem; }
+    .modal-success p { color: var(--gray); line-height: 1.7; max-width: 360px; margin-bottom: 1.5rem; }
+
+    /* form alert */
+    .form-alert {
+      padding: .8rem 1rem; border-radius: 6px; font-size: .85rem;
+      margin-bottom: 1rem; display: none;
+    }
+    .form-alert.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; display: block; }
+
+    /* ── NURSE REGISTRATION MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(7,15,30,.75); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 12px;
+      width: 100%; max-width: 560px; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      box-shadow: 0 24px 60px rgba(0,0,0,.3);
+    }
+    .modal-header {
+      padding: 2rem 2rem 0;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .modal-header h2 { font-size: 1.5rem; color: var(--navy); }
+    .modal-header p { font-size: .85rem; color: var(--gray); margin-top: .3rem; }
+    .modal-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--gray); padding: .25rem; transition: color .2s; flex-shrink: 0;
+    }
+    .modal-close:hover { color: var(--navy); }
+    .modal-progress { padding: 1.5rem 2rem 0; }
+    .progress-steps { display: flex; align-items: center; margin-bottom: .6rem; }
+    .progress-step { display: flex; align-items: center; flex: 1; }
+    .progress-step:last-child { flex: 0; }
+    .step-circle {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; transition: all .3s;
+      border: 2px solid #e2e8f0; background: var(--white); color: var(--gray);
+    }
+    .step-circle.active { border-color: var(--coral); background: var(--coral); color: var(--white); }
+    .step-circle.done { border-color: var(--sage); background: var(--sage); color: var(--white); }
+    .step-line { flex: 1; height: 2px; background: #e2e8f0; transition: background .3s; }
+    .step-line.done { background: var(--sage); }
+    .progress-labels { display: flex; justify-content: space-between; }
+    .progress-labels span { font-size: .7rem; color: var(--gray); text-align: center; flex: 1; }
+    .progress-labels span.active { color: var(--coral); font-weight: 600; }
+    .progress-labels span.done { color: var(--sage); font-weight: 600; }
+    .modal-body { padding: 1.5rem 2rem 2rem; }
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--navy); margin-bottom: .4rem; }
+    .form-group label .req { color: var(--coral); }
+    .form-group input, .form-group select {
+      width: 100%; padding: .65rem .9rem;
+      border: 1.5px solid #e2e8f0; border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: .875rem;
+      color: var(--navy); background: var(--white);
+      transition: border-color .2s; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--navy); }
+    .form-group input.error, .form-group select.error { border-color: var(--coral); }
+    .field-error { font-size: .75rem; color: var(--coral); margin-top: .3rem; display: none; }
+    .field-error.visible { display: block; }
+    .doc-upload-grid { display: flex; flex-direction: column; gap: .8rem; }
+    .doc-upload-item {
+      border: 1.5px dashed #e2e8f0; border-radius: 8px; padding: 1rem 1.2rem;
+      display: flex; align-items: center; justify-content: space-between; transition: border-color .2s;
+    }
+    .doc-upload-item:hover { border-color: var(--sage); }
+    .doc-upload-item.uploaded { border-color: var(--sage); background: #f0faf7; border-style: solid; }
+    .doc-info h4 { font-size: .85rem; font-weight: 600; color: var(--navy); }
+    .doc-info p { font-size: .75rem; color: var(--gray); margin-top: .15rem; }
+    .doc-required { color: var(--coral); font-size: .7rem; font-weight: 600; }
+    .doc-upload-btn {
+      background: none; border: 1.5px solid #e2e8f0; border-radius: 4px;
+      padding: .35rem .8rem; font-size: .78rem; font-weight: 600;
+      color: var(--navy); cursor: pointer; transition: all .2s; white-space: nowrap;
+    }
+    .doc-upload-btn:hover { border-color: var(--navy); }
+    .doc-upload-btn.uploaded { border-color: var(--sage); color: var(--sage); }
+    .doc-filename { font-size: .72rem; color: var(--sage); margin-top: .2rem; }
+    .modal-footer {
+      padding: 1rem 2rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid #f1f5f9;
+    }
+    .btn-back {
+      background: none; border: 1.5px solid #e2e8f0; color: var(--navy);
+      padding: .65rem 1.4rem; border-radius: 6px; font-weight: 600;
+      font-size: .875rem; cursor: pointer; transition: all .2s;
+    }
+    .btn-back:hover { border-color: var(--navy); }
+    .btn-next {
+      background: var(--coral); color: var(--white);
+      padding: .65rem 1.8rem; border-radius: 6px; font-weight: 600;
+      font-size: .875rem; cursor: pointer; border: none; transition: all .2s;
+    }
+    .btn-next:hover { background: #c73b21; }
+    .btn-next:disabled { background: var(--gray); cursor: not-allowed; }
+    .modal-success {
+      display: none; padding: 3rem 2rem;
+      text-align: center; flex-direction: column; align-items: center;
+    }
+    .modal-success.active { display: flex; }
+    .success-icon {
+      width: 64px; height: 64px; background: #ecfdf5; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem; color: #16a34a;
+    }
+    .modal-success h2 { font-size: 1.6rem; color: var(--navy); margin-bottom: .8rem; }
+    .modal-success p { color: var(--gray); line-height: 1.7; max-width: 360px; margin-bottom: 1.5rem; }
+    .form-alert { padding: .8rem 1rem; border-radius: 6px; font-size: .85rem; margin-bottom: 1rem; display: none; }
+    .form-alert.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; display: block; }
+
+    /* ── EMPLOYER REGISTRATION MODAL ── */
+    .emp-modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(7,15,30,.75); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .emp-modal-overlay.active { display: flex; }
+    .emp-modal {
+      background: var(--white); border-radius: 12px;
+      width: 100%; max-width: 560px; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      box-shadow: 0 24px 60px rgba(0,0,0,.3);
+    }
+    .emp-modal-header {
+      padding: 2rem 2rem 0;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .emp-modal-header h2 { font-size: 1.5rem; color: var(--navy); }
+    .emp-modal-header p { font-size: .85rem; color: var(--gray); margin-top: .3rem; }
+    .emp-modal-progress { padding: 1.5rem 2rem 0; }
+    .emp-modal-body { padding: 1.5rem 2rem 2rem; }
+    .emp-form-step { display: none; }
+    .emp-form-step.active { display: block; }
+    .emp-modal-footer {
+      padding: 1rem 2rem 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid #f1f5f9;
+    }
+    .emp-modal-success {
+      display: none; padding: 3rem 2rem;
+      text-align: center; flex-direction: column; align-items: center;
+    }
+    .emp-modal-success.active { display: flex; }
+    .emp-modal-success h2 { font-size: 1.6rem; color: var(--navy); margin-bottom: .8rem; }
+    .emp-modal-success p { color: var(--gray); line-height: 1.7; max-width: 360px; margin-bottom: 1.5rem; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       nav { padding: 1rem 2rem; }
@@ -230,10 +601,26 @@
   <nav>
     <div class="logo">Nurse<span>Connect</span></div>
     <ul>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#jobs">Jobs</a></li>
-      <li><a href="#homecare">Home Care</a></li>
-      <li><a href="#contact" class="nav-cta">Post a Job</a></li>
+      <li class="dropdown">
+        <a href="#">For Nurses</a>
+        <div class="dropdown-menu">
+          <a href="#" onclick="openNurseModal(event)">Register</a>
+          <a href="#jobs">Find Jobs</a>
+          <a href="#">Requirements</a>
+          <a href="#">FAQs</a>
+        </div>
+      </li>
+      <li class="dropdown">
+        <a href="#">For Employers</a>
+        <div class="dropdown-menu">
+          <a href="#contact">Request Staff</a>
+          <a href="#services">Staffing Solutions</a>
+          <a href="#how-it-works">How It Works</a>
+        </div>
+      </li>
+      <li><a href="#">About Us</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" onclick="openEmpModal(event)" class="nav-cta">Post a Job</a></li>
     </ul>
   </nav>
 
@@ -243,13 +630,13 @@
       <span class="hero-badge">For Nurses</span>
       <h1>Your Next Great Role Starts Here</h1>
       <p>Access hundreds of public, private, and agency nursing roles across South Africa. We match your SANC registration to opportunities that fit your life.</p>
-      <a href="#jobs" class="btn btn-coral">Browse Nursing Jobs</a>
+      <a href="#" class="btn btn-coral" onclick="openNurseModal(event)">Browse Nursing Jobs</a>
     </div>
     <div class="hero-right">
       <span class="hero-badge">For Employers</span>
       <h1>Hire Qualified Nurses Fast</h1>
       <p>From urgent locum shifts to permanent placements, we supply SANC-registered, experienced nursing professionals across all nine provinces.</p>
-      <a href="#contact" class="btn btn-white">Request Staff Now</a>
+      <a href="#" class="btn btn-white" onclick="openEmpModal(event)">Request Staff Now</a>
     </div>
     <div class="hero-tagline">
       <p>Connecting Care — One Placement at a Time</p>
@@ -259,67 +646,237 @@
   <!-- SERVICES STRIP -->
   <div class="services" id="services">
     <div class="service-item">
-      <div class="service-icon">🏥</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
       <h3>Permanent Placement</h3>
       <p>Long-term nursing roles across public hospitals, Mediclinic, Netcare, Life Healthcare, and private clinics nationwide.</p>
     </div>
     <div class="service-item">
-      <div class="service-icon">⚡</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
       <h3>Locum &amp; Relief Shifts</h3>
       <p>24/7 rapid response locum staffing for last-minute ward cover and emergency relief across SA facilities.</p>
     </div>
     <div class="service-item">
-      <div class="service-icon">🏡</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
       <h3>Home Care</h3>
       <p>Skilled nurses placed in community and domiciliary settings across South Africa's urban and rural areas.</p>
     </div>
     <div class="service-item">
-      <div class="service-icon">🌍</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
       <h3>International Recruitment</h3>
       <p>SANC registration guidance and placement support for internationally trained nurses seeking to work in South Africa.</p>
     </div>
   </div>
 
-  <!-- STATS -->
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-number">3,500+</div>
-      <div class="stat-label">Nurses Placed</div>
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-item">
+      <div class="trust-check">✓</div>
+      <div>
+        <h4>SANC Verification</h4>
+        <p>Every nurse is verified against the South African Nursing Council register before placement.</p>
+      </div>
     </div>
-    <div class="stat">
-      <div class="stat-number">180+</div>
-      <div class="stat-label">Partner Facilities</div>
+    <div class="trust-item">
+      <div class="trust-check">✓</div>
+      <div>
+        <h4>Temporary &amp; Contract Placements</h4>
+        <p>Flexible locum, relief, and fixed-term placements tailored to your facility's needs.</p>
+      </div>
     </div>
-    <div class="stat">
-      <div class="stat-number">97%</div>
-      <div class="stat-label">Satisfaction Rate</div>
+    <div class="trust-item">
+      <div class="trust-check">✓</div>
+      <div>
+        <h4>Nationwide Recruitment</h4>
+        <p>Sourcing qualified nurses across all nine provinces — urban and rural.</p>
+      </div>
     </div>
-    <div class="stat">
-      <div class="stat-number">48hr</div>
-      <div class="stat-label">Average Fill Time</div>
+    <div class="trust-item">
+      <div class="trust-check">✓</div>
+      <div>
+        <h4>24/7 Support</h4>
+        <p>Round-the-clock assistance for urgent staffing needs and nurse queries.</p>
+      </div>
     </div>
   </div>
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials" id="testimonials">
-    <div class="section-tag">Testimonials</div>
-    <h2 class="section-title">Trusted by Nurses &amp; Facilities Across SA</h2>
-    <div class="testimonials-grid">
-      <div class="testimonial-card">
-        <blockquote>NurseConnect placed me in an ICU role at a Netcare facility within a week of registering. The process was smooth and my consultant genuinely listened to what I needed.</blockquote>
-        <div class="t-author">Thandi M.</div>
-        <div class="t-role">ICU Staff Nurse, Johannesburg</div>
+  <!-- HOW WE VERIFY -->
+  <section class="verify">
+    <div class="section-tag">Our Process</div>
+    <h2 class="section-title">Every Placement is Carefully Screened</h2>
+    <p class="section-sub">Before any nurse is placed, they go through a rigorous verification process — so you can focus on patient care, not paperwork.</p>
+    <div class="verify-grid">
+      <div class="verify-card">
+        <div class="verify-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+        <h3>SANC Registration Check</h3>
+        <p>We verify every nurse directly against the South African Nursing Council register to confirm active, valid registration.</p>
       </div>
-      <div class="testimonial-card">
-        <blockquote>We filled three urgent ward vacancies over a long weekend. Responsive, professional, and the nurses they sent were outstanding — all fully SANC registered.</blockquote>
-        <div class="t-author">Dr. Johan K.</div>
-        <div class="t-role">Director of Nursing, Mediclinic Gauteng</div>
+      <div class="verify-card">
+        <div class="verify-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+        <h3>Qualification Verification</h3>
+        <p>Academic and professional qualifications are independently verified before any candidate is considered for placement.</p>
       </div>
-      <div class="testimonial-card">
-        <blockquote>As a Zimbabwean-trained nurse, their SANC registration guidance was invaluable. I was placed within weeks and finally feel like my career is moving forward.</blockquote>
-        <div class="t-author">Rutendo M.</div>
-        <div class="t-role">Paediatric Nurse, Cape Town</div>
+      <div class="verify-card">
+        <div class="verify-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Identity Verification</h3>
+        <p>South African ID or valid passport documents are checked and authenticated for every registered nurse.</p>
       </div>
+      <div class="verify-card">
+        <div class="verify-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3>Reference Checks</h3>
+        <p>We contact previous employers and supervisors to verify work history, conduct, and clinical competency.</p>
+      </div>
+      <div class="verify-card">
+        <div class="verify-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Criminal Record Screening</h3>
+        <p>All candidates undergo a criminal background check to ensure the safety of patients and healthcare environments.</p>
+      </div>
+      <div class="verify-card">
+        <div class="verify-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h3>Skills &amp; Availability Match</h3>
+        <p>We match each nurse's clinical speciality, experience level, and availability to the exact requirements of your vacancy.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="why" id="why">
+    <div class="section-tag">Why Choose Us</div>
+    <h2 class="section-title">Recruitment Built Around People, Not Just Placements</h2>
+    <p class="section-sub">We built NurseConnect to do things differently — with transparency, care, and compliance at the centre of everything.</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.38 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.64a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <h3>Responsive Support</h3>
+        <p>Whether you need a nurse tomorrow or are planning ahead, our team responds quickly and keeps you informed every step of the way.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+        <h3>Qualified Professionals Only</h3>
+        <p>Every nurse on our books is SANC-registered, fully verified, and clinically screened before being made available for placement.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h3>Flexible Staffing</h3>
+        <p>From a single overnight shift to a long-term contract, we match the right nurse to the right role at the right time.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Compliance-Focused</h3>
+        <p>Our recruitment process is built around SANC compliance, POPIA-compliant data handling, and full document verification.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Personalised Matching</h3>
+        <p>We don't just fill vacancies — we take time to understand your environment and match nurses who are the right clinical and cultural fit.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Confidential Process</h3>
+        <p>All candidate and employer information is handled with strict confidentiality in line with POPIA data protection standards.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-tag">How It Works</div>
+    <h2 class="section-title">Simple, Transparent, Efficient</h2>
+    <p class="section-sub">Whether you're a nurse looking for work or a facility needing staff, here's exactly what to expect.</p>
+    <div class="hiw-grid">
+
+      <div class="hiw-col nurses">
+        <h3>For Nurses</h3>
+        <div class="hiw-step">
+          <div class="step-num">1</div>
+          <div class="hiw-step-content">
+            <h4>Register Online</h4>
+            <p>Complete your profile with your personal details, nursing category, and speciality areas.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">2</div>
+          <div class="hiw-step-content">
+            <h4>Upload Your Documents</h4>
+            <p>Submit your SANC certificate, ID, qualifications, and references securely through our portal.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">3</div>
+          <div class="hiw-step-content">
+            <h4>Complete Verification</h4>
+            <p>Our team verifies your credentials and clears you for placement — usually within 48 hours.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">4</div>
+          <div class="hiw-step-content">
+            <h4>Receive Shift Offers</h4>
+            <p>We match you to suitable roles and notify you of available shifts based on your availability.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">5</div>
+          <div class="hiw-step-content">
+            <h4>Accept &amp; Confirm</h4>
+            <p>Accept shifts that work for you. We handle all placement logistics and facility communication.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">6</div>
+          <div class="hiw-step-content">
+            <h4>Get Paid</h4>
+            <p>Submit your timesheet and receive prompt, reliable payment directly to your account.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hiw-col employers">
+        <h3>For Employers</h3>
+        <div class="hiw-step">
+          <div class="step-num">1</div>
+          <div class="hiw-step-content">
+            <h4>Submit a Staffing Request</h4>
+            <p>Tell us what you need — specialty, shift times, duration, and any specific requirements.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">2</div>
+          <div class="hiw-step-content">
+            <h4>We Source Suitable Nurses</h4>
+            <p>Our team searches our verified pool and identifies nurses that match your exact criteria.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">3</div>
+          <div class="hiw-step-content">
+            <h4>You Approve Candidates</h4>
+            <p>Review candidate profiles, credentials, and availability before confirming any placement.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">4</div>
+          <div class="hiw-step-content">
+            <h4>Nurses Report for Duty</h4>
+            <p>Confirmed nurses arrive prepared, verified, and ready to integrate into your clinical team.</p>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="step-num">5</div>
+          <div class="hiw-step-content">
+            <h4>Ongoing Support</h4>
+            <p>We stay in contact throughout the placement to ensure everything runs smoothly for both parties.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -332,7 +889,7 @@
       <div class="job-card">
         <span class="job-type type-full">Full Time</span>
         <h3>Senior Staff Nurse — Casualty</h3>
-        <p class="location">Netcare Milpark Hospital, Johannesburg</p>
+        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Netcare Milpark Hospital, Johannesburg</p>
         <div class="job-meta">
           <span>Category R</span><span>R28,000–R36,000/mo</span><span>Immediate Start</span>
         </div>
@@ -341,7 +898,7 @@
       <div class="job-card">
         <span class="job-type type-contract">Contract</span>
         <h3>Theatre Scrub Nurse</h3>
-        <p class="location">Mediclinic Constantiaberg, Cape Town</p>
+        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Mediclinic Constantiaberg, Cape Town</p>
         <div class="job-meta">
           <span>Specialist</span><span>R220–R280/hr</span><span>3 Months+</span>
         </div>
@@ -350,7 +907,7 @@
       <div class="job-card">
         <span class="job-type type-agency">Agency</span>
         <h3>Community District Nurse</h3>
-        <p class="location">Department of Health, KwaZulu-Natal</p>
+        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Department of Health, KwaZulu-Natal</p>
         <div class="job-meta">
           <span>Category P</span><span>R22,000–R30,000/mo</span><span>Flexible Days</span>
         </div>
@@ -359,7 +916,7 @@
       <div class="job-card">
         <span class="job-type type-full">Full Time</span>
         <h3>Neonatal Nurse Specialist</h3>
-        <p class="location">Life Entabeni Hospital, Durban</p>
+        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Life Entabeni Hospital, Durban</p>
         <div class="job-meta">
           <span>Specialist</span><span>R32,000–R42,000/mo</span><span>Permanent</span>
         </div>
@@ -368,7 +925,7 @@
       <div class="job-card">
         <span class="job-type type-contract">Contract</span>
         <h3>ICU Staff Nurse</h3>
-        <p class="location">Groote Schuur Hospital, Cape Town</p>
+        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Groote Schuur Hospital, Cape Town</p>
         <div class="job-meta">
           <span>Category R</span><span>R240–R300/hr</span><span>Night Shifts</span>
         </div>
@@ -377,7 +934,7 @@
       <div class="job-card">
         <span class="job-type type-agency">Agency</span>
         <h3>Mental Health Nurse</h3>
-        <p class="location">Akeso Clinic, Pretoria</p>
+        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Akeso Clinic, Pretoria</p>
         <div class="job-meta">
           <span>Registered</span><span>R200–R260/hr</span><span>Days &amp; Nights</span>
         </div>
@@ -447,6 +1004,831 @@
     <p>© 2025 NurseConnect (Pty) Ltd. All rights reserved. Registered in South Africa.</p>
     <p>SANC Compliant · CIPC Registered · APSO Member</p>
   </div>
+
+  <!-- NURSE REGISTRATION MODAL -->
+  <div class="modal-overlay" id="nurseModal">
+    <div class="modal">
+
+      <div class="modal-header">
+        <div>
+          <h2>Register as a Nurse</h2>
+          <p>Join NurseConnect and start receiving shift offers</p>
+        </div>
+        <button class="modal-close" onclick="closeNurseModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="modal-progress">
+        <div class="progress-steps">
+          <div class="progress-step"><div class="step-circle active" id="sc1">1</div><div class="step-line" id="sl1"></div></div>
+          <div class="progress-step"><div class="step-circle" id="sc2">2</div><div class="step-line" id="sl2"></div></div>
+          <div class="progress-step"><div class="step-circle" id="sc3">3</div><div class="step-line" id="sl3"></div></div>
+          <div class="progress-step"><div class="step-circle" id="sc4">4</div></div>
+        </div>
+        <div class="progress-labels">
+          <span id="sl-1" class="active">Account</span>
+          <span id="sl-2">Nursing</span>
+          <span id="sl-3">Personal</span>
+          <span id="sl-4">Documents</span>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-alert" id="formAlert"></div>
+
+        <!-- Step 1: Account -->
+        <div class="form-step active" id="step1">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name <span class="req">*</span></label>
+              <input type="text" id="firstName" placeholder="e.g. Thandi" />
+              <div class="field-error" id="err-firstName">Please enter your first name</div>
+            </div>
+            <div class="form-group">
+              <label>Last Name <span class="req">*</span></label>
+              <input type="text" id="lastName" placeholder="e.g. Mokoena" />
+              <div class="field-error" id="err-lastName">Please enter your last name</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address <span class="req">*</span></label>
+            <input type="email" id="email" placeholder="you@example.com" />
+            <div class="field-error" id="err-email">Please enter a valid email address</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Password <span class="req">*</span></label>
+              <input type="password" id="password" placeholder="Min. 8 characters" />
+              <div class="field-error" id="err-password">Password must be at least 8 characters</div>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password <span class="req">*</span></label>
+              <input type="password" id="confirmPassword" placeholder="Repeat password" />
+              <div class="field-error" id="err-confirmPassword">Passwords do not match</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Nursing Details -->
+        <div class="form-step" id="step2">
+          <div class="form-group">
+            <label>SANC Registration Number <span class="req">*</span></label>
+            <input type="text" id="sancNumber" placeholder="e.g. 12345678" />
+            <div class="field-error" id="err-sancNumber">Please enter your SANC number</div>
+          </div>
+          <div class="form-group">
+            <label>Nursing Category <span class="req">*</span></label>
+            <select id="nursingCategory">
+              <option value="">Select category</option>
+              <option value="registered">Registered Nurse</option>
+              <option value="enrolled">Enrolled Nurse</option>
+              <option value="auxiliary">Auxiliary Nurse</option>
+              <option value="specialist">Specialist Nurse</option>
+              <option value="midwife">Midwife</option>
+            </select>
+            <div class="field-error" id="err-nursingCategory">Please select your nursing category</div>
+          </div>
+          <div class="form-group">
+            <label>Clinical Speciality</label>
+            <input type="text" id="speciality" placeholder="e.g. ICU, Theatre, Paediatrics" />
+          </div>
+          <div class="form-group">
+            <label>Years of Experience <span class="req">*</span></label>
+            <select id="yearsExperience">
+              <option value="">Select experience</option>
+              <option value="0">Less than 1 year</option>
+              <option value="1">1 – 2 years</option>
+              <option value="3">3 – 5 years</option>
+              <option value="6">6 – 10 years</option>
+              <option value="11">More than 10 years</option>
+            </select>
+            <div class="field-error" id="err-yearsExperience">Please select your experience level</div>
+          </div>
+        </div>
+
+        <!-- Step 3: Personal Details -->
+        <div class="form-step" id="step3">
+          <div class="form-group">
+            <label>South African ID Number <span class="req">*</span></label>
+            <input type="text" id="idNumber" placeholder="13-digit ID number" maxlength="13" />
+            <div class="field-error" id="err-idNumber">Please enter a valid 13-digit SA ID number</div>
+          </div>
+          <div class="form-group">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="e.g. 071 234 5678" />
+            <div class="field-error" id="err-phone">Please enter a valid phone number</div>
+          </div>
+          <div class="form-group">
+            <label>Province <span class="req">*</span></label>
+            <select id="province">
+              <option value="">Select province</option>
+              <option value="GP">Gauteng</option>
+              <option value="WC">Western Cape</option>
+              <option value="KZN">KwaZulu-Natal</option>
+              <option value="EC">Eastern Cape</option>
+              <option value="FS">Free State</option>
+              <option value="LP">Limpopo</option>
+              <option value="MP">Mpumalanga</option>
+              <option value="NC">Northern Cape</option>
+              <option value="NW">North West</option>
+            </select>
+            <div class="field-error" id="err-province">Please select your province</div>
+          </div>
+          <div class="form-group">
+            <label>City / Town <span class="req">*</span></label>
+            <input type="text" id="city" placeholder="e.g. Johannesburg" />
+            <div class="field-error" id="err-city">Please enter your city or town</div>
+          </div>
+        </div>
+
+        <!-- Step 4: Documents -->
+        <div class="form-step" id="step4">
+          <p style="font-size:.85rem;color:var(--gray);margin-bottom:1.2rem;line-height:1.6">Upload your documents below. Required documents must be uploaded before submitting. Accepted formats: PDF, JPG, PNG (max 5MB each).</p>
+          <div class="doc-upload-grid">
+            <div class="doc-upload-item" id="doc-sanc_certificate">
+              <div class="doc-info">
+                <h4>SANC Certificate <span class="doc-required">Required</span></h4>
+                <p>Your current SANC registration certificate</p>
+                <div class="doc-filename" id="name-sanc_certificate"></div>
+              </div>
+              <div>
+                <input type="file" id="file-sanc_certificate" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFileSelect(this,'sanc_certificate')" />
+                <button class="doc-upload-btn" id="btn-sanc_certificate" onclick="document.getElementById('file-sanc_certificate').click()">Upload</button>
+              </div>
+            </div>
+            <div class="doc-upload-item" id="doc-id_document">
+              <div class="doc-info">
+                <h4>ID Document <span class="doc-required">Required</span></h4>
+                <p>South African ID or valid passport</p>
+                <div class="doc-filename" id="name-id_document"></div>
+              </div>
+              <div>
+                <input type="file" id="file-id_document" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFileSelect(this,'id_document')" />
+                <button class="doc-upload-btn" id="btn-id_document" onclick="document.getElementById('file-id_document').click()">Upload</button>
+              </div>
+            </div>
+            <div class="doc-upload-item" id="doc-cv">
+              <div class="doc-info">
+                <h4>Curriculum Vitae <span class="doc-required">Required</span></h4>
+                <p>Your most recent CV</p>
+                <div class="doc-filename" id="name-cv"></div>
+              </div>
+              <div>
+                <input type="file" id="file-cv" accept=".pdf,.doc,.docx" style="display:none" onchange="handleFileSelect(this,'cv')" />
+                <button class="doc-upload-btn" id="btn-cv" onclick="document.getElementById('file-cv').click()">Upload</button>
+              </div>
+            </div>
+            <div class="doc-upload-item" id="doc-qualification">
+              <div class="doc-info">
+                <h4>Qualification Certificate <span style="color:var(--gray);font-size:.7rem;font-weight:400">Optional</span></h4>
+                <p>Nursing diploma or degree certificate</p>
+                <div class="doc-filename" id="name-qualification"></div>
+              </div>
+              <div>
+                <input type="file" id="file-qualification" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFileSelect(this,'qualification')" />
+                <button class="doc-upload-btn" id="btn-qualification" onclick="document.getElementById('file-qualification').click()">Upload</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Success Screen -->
+      <div class="modal-success" id="modalSuccess">
+        <div class="success-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2>Registration Submitted!</h2>
+        <p>Thank you for registering with NurseConnect. Our team will review your documents and be in touch within 48 hours.</p>
+        <button class="btn btn-coral" onclick="closeNurseModal()">Back to Homepage</button>
+      </div>
+
+      <div class="modal-footer" id="modalFooter">
+        <button class="btn-back" id="btnBack" onclick="prevStep()" style="visibility:hidden">Back</button>
+        <button class="btn-next" id="btnNext" onclick="nextStep()">Continue</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const TOTAL_STEPS = 4;
+    let currentStep = 1;
+    const uploadedFiles = {};
+    const requiredDocs = ['sanc_certificate', 'id_document', 'cv'];
+
+    function openNurseModal(e) {
+      if (e) e.preventDefault();
+      document.getElementById('nurseModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeNurseModal() {
+      document.getElementById('nurseModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('nurseModal').addEventListener('click', function(e) {
+      if (e.target === this) closeNurseModal();
+    });
+
+    function updateProgress() {
+      for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const circle = document.getElementById('sc' + i);
+        const label = document.getElementById('sl-' + i);
+        const line = document.getElementById('sl' + i);
+        circle.className = 'step-circle';
+        label.className = '';
+        if (i < currentStep) {
+          circle.classList.add('done');
+          circle.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+          label.classList.add('done');
+          if (line) line.classList.add('done');
+        } else if (i === currentStep) {
+          circle.classList.add('active');
+          circle.innerHTML = i;
+          label.classList.add('active');
+          if (line) line.classList.remove('done');
+        } else {
+          circle.innerHTML = i;
+          if (line) line.classList.remove('done');
+        }
+      }
+      document.getElementById('btnBack').style.visibility = currentStep > 1 ? 'visible' : 'hidden';
+      document.getElementById('btnNext').textContent = currentStep === TOTAL_STEPS ? 'Submit' : 'Continue';
+    }
+
+    function showStep(n) {
+      document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      currentStep = n;
+      updateProgress();
+      clearAlert();
+    }
+
+    function validateStep() {
+      let valid = true;
+      function check(id, condition) {
+        const el = document.getElementById(id);
+        const err = document.getElementById('err-' + id);
+        if (!condition) {
+          el.classList.add('error');
+          if (err) err.classList.add('visible');
+          valid = false;
+        } else {
+          el.classList.remove('error');
+          if (err) err.classList.remove('visible');
+        }
+      }
+      if (currentStep === 1) {
+        check('firstName', document.getElementById('firstName').value.trim());
+        check('lastName', document.getElementById('lastName').value.trim());
+        const email = document.getElementById('email').value.trim();
+        check('email', email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+        const pw = document.getElementById('password').value;
+        check('password', pw.length >= 8);
+        check('confirmPassword', pw === document.getElementById('confirmPassword').value);
+      }
+      if (currentStep === 2) {
+        check('sancNumber', document.getElementById('sancNumber').value.trim());
+        check('nursingCategory', document.getElementById('nursingCategory').value);
+        check('yearsExperience', document.getElementById('yearsExperience').value);
+      }
+      if (currentStep === 3) {
+        const id = document.getElementById('idNumber').value.trim();
+        check('idNumber', id.length === 13 && /^\d+$/.test(id));
+        check('phone', document.getElementById('phone').value.trim().length >= 10);
+        check('province', document.getElementById('province').value);
+        check('city', document.getElementById('city').value.trim());
+      }
+      if (currentStep === 4) {
+        const missing = requiredDocs.filter(d => !uploadedFiles[d]);
+        if (missing.length > 0) {
+          showAlert('Please upload all required documents before submitting.');
+          valid = false;
+        }
+      }
+      return valid;
+    }
+
+    function nextStep() {
+      if (!validateStep()) return;
+      if (currentStep < TOTAL_STEPS) {
+        showStep(currentStep + 1);
+      } else {
+        submitRegistration();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) showStep(currentStep - 1);
+    }
+
+    function handleFileSelect(input, docType) {
+      const file = input.files[0];
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) { showAlert('File size must be under 5MB.'); return; }
+      uploadedFiles[docType] = file;
+      document.getElementById('doc-' + docType).classList.add('uploaded');
+      document.getElementById('btn-' + docType).textContent = 'Change';
+      document.getElementById('btn-' + docType).classList.add('uploaded');
+      document.getElementById('name-' + docType).textContent = file.name;
+    }
+
+    async function submitRegistration() {
+      const btn = document.getElementById('btnNext');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      try {
+        const accountRes = await fetch('http://localhost:8000/api/accounts/register/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            first_name: document.getElementById('firstName').value.trim(),
+            last_name: document.getElementById('lastName').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+            role: 'nurse'
+          })
+        });
+        if (!accountRes.ok) {
+          const err = await accountRes.json();
+          showAlert(Object.values(err).flat().join(' '));
+          btn.disabled = false; btn.textContent = 'Submit'; return;
+        }
+        await fetch('http://localhost:8000/api/accounts/login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value
+          })
+        });
+        const profileRes = await fetch('http://localhost:8000/api/nurses/profile/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            sanc_number: document.getElementById('sancNumber').value.trim(),
+            nursing_category: document.getElementById('nursingCategory').value,
+            speciality: document.getElementById('speciality').value.trim(),
+            years_experience: parseInt(document.getElementById('yearsExperience').value),
+            id_number: document.getElementById('idNumber').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            province: document.getElementById('province').value,
+            city: document.getElementById('city').value.trim()
+          })
+        });
+        if (!profileRes.ok) {
+          showAlert('Profile could not be created. Please try again.');
+          btn.disabled = false; btn.textContent = 'Submit'; return;
+        }
+        for (const [docType, file] of Object.entries(uploadedFiles)) {
+          const formData = new FormData();
+          formData.append('document_type', docType);
+          formData.append('file', file);
+          await fetch('http://localhost:8000/api/nurses/documents/', {
+            method: 'POST', credentials: 'include', body: formData
+          });
+        }
+        document.querySelector('.modal-body').style.display = 'none';
+        document.querySelector('.modal-progress').style.display = 'none';
+        document.querySelector('.modal-header').style.display = 'none';
+        document.getElementById('modalFooter').style.display = 'none';
+        document.getElementById('modalSuccess').classList.add('active');
+      } catch(err) {
+        showAlert('Connection error. Please make sure the server is running.');
+        btn.disabled = false; btn.textContent = 'Submit';
+      }
+    }
+
+    function showAlert(msg) {
+      const el = document.getElementById('formAlert');
+      el.textContent = msg;
+      el.className = 'form-alert error';
+    }
+
+    function clearAlert() {
+      document.getElementById('formAlert').className = 'form-alert';
+    }
+  </script>
+
+  <!-- EMPLOYER REGISTRATION MODAL -->
+  <div class="emp-modal-overlay" id="empModal">
+    <div class="emp-modal">
+
+      <div class="emp-modal-header">
+        <div>
+          <h2>Request Nursing Staff</h2>
+          <p>Register your facility and submit a staffing request</p>
+        </div>
+        <button class="modal-close" onclick="closeEmpModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="emp-modal-progress">
+        <div class="progress-steps">
+          <div class="progress-step"><div class="step-circle active" id="esc1">1</div><div class="step-line" id="esl1"></div></div>
+          <div class="progress-step"><div class="step-circle" id="esc2">2</div><div class="step-line" id="esl2"></div></div>
+          <div class="progress-step"><div class="step-circle" id="esc3">3</div><div class="step-line" id="esl3"></div></div>
+          <div class="progress-step"><div class="step-circle" id="esc4">4</div></div>
+        </div>
+        <div class="progress-labels">
+          <span id="esl-1" class="active">Account</span>
+          <span id="esl-2">Facility</span>
+          <span id="esl-3">Contact</span>
+          <span id="esl-4">Staffing</span>
+        </div>
+      </div>
+
+      <div class="emp-modal-body">
+        <div class="form-alert" id="empFormAlert"></div>
+
+        <!-- Step 1: Account -->
+        <div class="emp-form-step active" id="estep1">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name <span class="req">*</span></label>
+              <input type="text" id="eFirstName" placeholder="e.g. Johan" />
+              <div class="field-error" id="err-eFirstName">Please enter your first name</div>
+            </div>
+            <div class="form-group">
+              <label>Last Name <span class="req">*</span></label>
+              <input type="text" id="eLastName" placeholder="e.g. van der Merwe" />
+              <div class="field-error" id="err-eLastName">Please enter your last name</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Work Email Address <span class="req">*</span></label>
+            <input type="email" id="eEmail" placeholder="you@facility.co.za" />
+            <div class="field-error" id="err-eEmail">Please enter a valid email address</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Password <span class="req">*</span></label>
+              <input type="password" id="ePassword" placeholder="Min. 8 characters" />
+              <div class="field-error" id="err-ePassword">Password must be at least 8 characters</div>
+            </div>
+            <div class="form-group">
+              <label>Confirm Password <span class="req">*</span></label>
+              <input type="password" id="eConfirmPassword" placeholder="Repeat password" />
+              <div class="field-error" id="err-eConfirmPassword">Passwords do not match</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Facility Details -->
+        <div class="emp-form-step" id="estep2">
+          <div class="form-group">
+            <label>Facility Name <span class="req">*</span></label>
+            <input type="text" id="eFacilityName" placeholder="e.g. Netcare Milpark Hospital" />
+            <div class="field-error" id="err-eFacilityName">Please enter your facility name</div>
+          </div>
+          <div class="form-group">
+            <label>Facility Type <span class="req">*</span></label>
+            <select id="eFacilityType">
+              <option value="">Select type</option>
+              <option value="public_hospital">Public Hospital</option>
+              <option value="private_hospital">Private Hospital</option>
+              <option value="clinic">Clinic</option>
+              <option value="home_care">Home Care Provider</option>
+              <option value="frail_care">Frail Care Facility</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="field-error" id="err-eFacilityType">Please select your facility type</div>
+          </div>
+          <div class="form-group">
+            <label>Province <span class="req">*</span></label>
+            <select id="eProvince">
+              <option value="">Select province</option>
+              <option value="GP">Gauteng</option>
+              <option value="WC">Western Cape</option>
+              <option value="KZN">KwaZulu-Natal</option>
+              <option value="EC">Eastern Cape</option>
+              <option value="FS">Free State</option>
+              <option value="LP">Limpopo</option>
+              <option value="MP">Mpumalanga</option>
+              <option value="NC">Northern Cape</option>
+              <option value="NW">North West</option>
+            </select>
+            <div class="field-error" id="err-eProvince">Please select your province</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City / Town <span class="req">*</span></label>
+              <input type="text" id="eCity" placeholder="e.g. Johannesburg" />
+              <div class="field-error" id="err-eCity">Please enter your city</div>
+            </div>
+            <div class="form-group">
+              <label>Street Address <span class="req">*</span></label>
+              <input type="text" id="eAddress" placeholder="e.g. 9 Guild Rd, Parktown" />
+              <div class="field-error" id="err-eAddress">Please enter your address</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Contact Details -->
+        <div class="emp-form-step" id="estep3">
+          <div class="form-group">
+            <label>Contact Person <span class="req">*</span></label>
+            <input type="text" id="eContactPerson" placeholder="Full name of primary contact" />
+            <div class="field-error" id="err-eContactPerson">Please enter the contact person's name</div>
+          </div>
+          <div class="form-group">
+            <label>Contact Phone Number <span class="req">*</span></label>
+            <input type="tel" id="ePhone" placeholder="e.g. 011 123 4567" />
+            <div class="field-error" id="err-ePhone">Please enter a valid phone number</div>
+          </div>
+          <div class="form-group" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:1rem;">
+            <p style="font-size:.82rem;color:var(--gray);line-height:1.6">
+              <strong style="color:var(--navy)">POPIA Notice:</strong> Your personal and facility information will be stored securely and used only for the purpose of matching your staffing needs with qualified nurses. We will not share your data with third parties without your consent.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4: Staffing Needs -->
+        <div class="emp-form-step" id="estep4">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nursing Category Required <span class="req">*</span></label>
+              <select id="eNursingCategory">
+                <option value="">Select category</option>
+                <option value="registered">Registered Nurse</option>
+                <option value="enrolled">Enrolled Nurse</option>
+                <option value="auxiliary">Auxiliary Nurse</option>
+                <option value="specialist">Specialist Nurse</option>
+                <option value="midwife">Midwife</option>
+              </select>
+              <div class="field-error" id="err-eNursingCategory">Please select a nursing category</div>
+            </div>
+            <div class="form-group">
+              <label>Number of Nurses <span class="req">*</span></label>
+              <input type="number" id="eNumNurses" placeholder="e.g. 3" min="1" />
+              <div class="field-error" id="err-eNumNurses">Please enter the number of nurses needed</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Clinical Speciality</label>
+            <input type="text" id="eSpeciality" placeholder="e.g. ICU, Theatre, Paediatrics" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Shift Type <span class="req">*</span></label>
+              <select id="eShiftType">
+                <option value="">Select shift</option>
+                <option value="day">Day Shift</option>
+                <option value="night">Night Shift</option>
+                <option value="both">Day &amp; Night</option>
+              </select>
+              <div class="field-error" id="err-eShiftType">Please select a shift type</div>
+            </div>
+            <div class="form-group">
+              <label>Urgency <span class="req">*</span></label>
+              <select id="eUrgency">
+                <option value="">Select urgency</option>
+                <option value="immediate">Immediate (within 24hrs)</option>
+                <option value="urgent">Urgent (within 48hrs)</option>
+                <option value="planned">Planned (48hrs+)</option>
+              </select>
+              <div class="field-error" id="err-eUrgency">Please select urgency</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Start Date <span class="req">*</span></label>
+            <input type="date" id="eStartDate" />
+            <div class="field-error" id="err-eStartDate">Please select a start date</div>
+          </div>
+          <div class="form-group">
+            <label>Additional Notes</label>
+            <input type="text" id="eNotes" placeholder="Any specific requirements or additional information" />
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Success Screen -->
+      <div class="emp-modal-success" id="empModalSuccess">
+        <div class="success-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h2>Request Submitted!</h2>
+        <p>Thank you for registering with NurseConnect. Our team will review your staffing request and contact you within 24 hours.</p>
+        <button class="btn btn-coral" onclick="closeEmpModal()">Back to Homepage</button>
+      </div>
+
+      <div class="emp-modal-footer" id="empModalFooter">
+        <button class="btn-back" id="eBtnBack" onclick="empPrevStep()" style="visibility:hidden">Back</button>
+        <button class="btn-next" id="eBtnNext" onclick="empNextStep()">Continue</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── EMPLOYER MODAL ──
+    const EMP_TOTAL_STEPS = 4;
+    let empCurrentStep = 1;
+
+    function openEmpModal(e) {
+      if (e) e.preventDefault();
+      document.getElementById('empModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeEmpModal() {
+      document.getElementById('empModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('empModal').addEventListener('click', function(e) {
+      if (e.target === this) closeEmpModal();
+    });
+
+    function empUpdateProgress() {
+      for (let i = 1; i <= EMP_TOTAL_STEPS; i++) {
+        const circle = document.getElementById('esc' + i);
+        const label = document.getElementById('esl-' + i);
+        const line = document.getElementById('esl' + i);
+        circle.className = 'step-circle';
+        label.className = '';
+        if (i < empCurrentStep) {
+          circle.classList.add('done');
+          circle.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+          label.classList.add('done');
+          if (line) line.classList.add('done');
+        } else if (i === empCurrentStep) {
+          circle.classList.add('active');
+          circle.innerHTML = i;
+          label.classList.add('active');
+          if (line) line.classList.remove('done');
+        } else {
+          circle.innerHTML = i;
+          if (line) line.classList.remove('done');
+        }
+      }
+      document.getElementById('eBtnBack').style.visibility = empCurrentStep > 1 ? 'visible' : 'hidden';
+      document.getElementById('eBtnNext').textContent = empCurrentStep === EMP_TOTAL_STEPS ? 'Submit' : 'Continue';
+    }
+
+    function empShowStep(n) {
+      document.querySelectorAll('.emp-form-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('estep' + n).classList.add('active');
+      empCurrentStep = n;
+      empUpdateProgress();
+      document.getElementById('empFormAlert').className = 'form-alert';
+    }
+
+    function empValidateStep() {
+      let valid = true;
+      function check(id, condition) {
+        const el = document.getElementById(id);
+        const err = document.getElementById('err-' + id);
+        if (!condition) {
+          el.classList.add('error');
+          if (err) err.classList.add('visible');
+          valid = false;
+        } else {
+          el.classList.remove('error');
+          if (err) err.classList.remove('visible');
+        }
+      }
+      if (empCurrentStep === 1) {
+        check('eFirstName', document.getElementById('eFirstName').value.trim());
+        check('eLastName', document.getElementById('eLastName').value.trim());
+        const email = document.getElementById('eEmail').value.trim();
+        check('eEmail', email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+        const pw = document.getElementById('ePassword').value;
+        check('ePassword', pw.length >= 8);
+        check('eConfirmPassword', pw === document.getElementById('eConfirmPassword').value);
+      }
+      if (empCurrentStep === 2) {
+        check('eFacilityName', document.getElementById('eFacilityName').value.trim());
+        check('eFacilityType', document.getElementById('eFacilityType').value);
+        check('eProvince', document.getElementById('eProvince').value);
+        check('eCity', document.getElementById('eCity').value.trim());
+        check('eAddress', document.getElementById('eAddress').value.trim());
+      }
+      if (empCurrentStep === 3) {
+        check('eContactPerson', document.getElementById('eContactPerson').value.trim());
+        check('ePhone', document.getElementById('ePhone').value.trim().length >= 10);
+      }
+      if (empCurrentStep === 4) {
+        check('eNursingCategory', document.getElementById('eNursingCategory').value);
+        check('eNumNurses', document.getElementById('eNumNurses').value > 0);
+        check('eShiftType', document.getElementById('eShiftType').value);
+        check('eUrgency', document.getElementById('eUrgency').value);
+        check('eStartDate', document.getElementById('eStartDate').value);
+      }
+      return valid;
+    }
+
+    function empNextStep() {
+      if (!empValidateStep()) return;
+      if (empCurrentStep < EMP_TOTAL_STEPS) {
+        empShowStep(empCurrentStep + 1);
+      } else {
+        empSubmit();
+      }
+    }
+
+    function empPrevStep() {
+      if (empCurrentStep > 1) empShowStep(empCurrentStep - 1);
+    }
+
+    async function empSubmit() {
+      const btn = document.getElementById('eBtnNext');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      const alertEl = document.getElementById('empFormAlert');
+
+      try {
+        // Register account
+        const accountRes = await fetch('http://127.0.0.1:8000/api/accounts/register/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            first_name: document.getElementById('eFirstName').value.trim(),
+            last_name: document.getElementById('eLastName').value.trim(),
+            email: document.getElementById('eEmail').value.trim(),
+            password: document.getElementById('ePassword').value,
+            role: 'employer'
+          })
+        });
+        if (!accountRes.ok) {
+          const err = await accountRes.json();
+          alertEl.textContent = Object.values(err).flat().join(' ');
+          alertEl.className = 'form-alert error';
+          btn.disabled = false; btn.textContent = 'Submit'; return;
+        }
+
+        // Login
+        await fetch('http://127.0.0.1:8000/api/accounts/login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            email: document.getElementById('eEmail').value.trim(),
+            password: document.getElementById('ePassword').value
+          })
+        });
+
+        // Create employer profile
+        const profileRes = await fetch('http://127.0.0.1:8000/api/employers/profile/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            facility_name: document.getElementById('eFacilityName').value.trim(),
+            facility_type: document.getElementById('eFacilityType').value,
+            province: document.getElementById('eProvince').value,
+            city: document.getElementById('eCity').value.trim(),
+            address: document.getElementById('eAddress').value.trim(),
+            contact_person: document.getElementById('eContactPerson').value.trim(),
+            phone: document.getElementById('ePhone').value.trim()
+          })
+        });
+        if (!profileRes.ok) {
+          alertEl.textContent = 'Facility profile could not be created. Please try again.';
+          alertEl.className = 'form-alert error';
+          btn.disabled = false; btn.textContent = 'Submit'; return;
+        }
+
+        // Submit staffing request
+        await fetch('http://127.0.0.1:8000/api/employers/requests/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            nursing_category: document.getElementById('eNursingCategory').value,
+            number_of_nurses: parseInt(document.getElementById('eNumNurses').value),
+            speciality: document.getElementById('eSpeciality').value.trim(),
+            shift_type: document.getElementById('eShiftType').value,
+            urgency: document.getElementById('eUrgency').value,
+            start_date: document.getElementById('eStartDate').value,
+            additional_notes: document.getElementById('eNotes').value.trim()
+          })
+        });
+
+        // Show success
+        document.querySelector('.emp-modal-body').style.display = 'none';
+        document.querySelector('.emp-modal-progress').style.display = 'none';
+        document.querySelector('.emp-modal-header').style.display = 'none';
+        document.getElementById('empModalFooter').style.display = 'none';
+        document.getElementById('empModalSuccess').classList.add('active');
+
+      } catch(err) {
+        alertEl.textContent = 'Connection error. Please make sure the server is running.';
+        alertEl.className = 'form-alert error';
+        btn.disabled = false; btn.textContent = 'Submit';
+      }
+    }
+  </script>
 
 </body>
 </html>
