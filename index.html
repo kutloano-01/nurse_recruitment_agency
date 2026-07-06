@@ -885,61 +885,21 @@
     <div class="section-tag">Latest Opportunities</div>
     <h2 class="section-title">Find Your Next Nursing Role</h2>
     <p class="section-sub">Roles updated daily across all nine provinces. Filter by specialty, location, or contract type.</p>
-    <div class="jobs-grid">
-      <div class="job-card">
-        <span class="job-type type-full">Full Time</span>
-        <h3>Senior Staff Nurse — Casualty</h3>
-        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Netcare Milpark Hospital, Johannesburg</p>
-        <div class="job-meta">
-          <span>Category R</span><span>R28,000–R36,000/mo</span><span>Immediate Start</span>
-        </div>
-        <button class="btn-outline">View &amp; Apply</button>
+    <div id="jobsContainer">
+      <div id="jobsLoading" style="text-align:center;padding:3rem 0;color:var(--gray);font-size:.95rem;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;margin:0 auto .8rem;opacity:.4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3M4.22 4.22l2.12 2.12m11.32 11.32 2.12 2.12M3 12h3m12 0h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+        Loading available positions...
       </div>
-      <div class="job-card">
-        <span class="job-type type-contract">Contract</span>
-        <h3>Theatre Scrub Nurse</h3>
-        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Mediclinic Constantiaberg, Cape Town</p>
-        <div class="job-meta">
-          <span>Specialist</span><span>R220–R280/hr</span><span>3 Months+</span>
-        </div>
-        <button class="btn-outline">View &amp; Apply</button>
+      <div id="jobsError" style="display:none;text-align:center;padding:3rem 0;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;margin:0 auto .8rem;color:var(--coral);opacity:.6"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <p style="color:var(--gray);font-size:.9rem;margin-bottom:.8rem">Unable to load job listings right now.</p>
+        <button class="btn-outline" onclick="loadJobs()" style="font-size:.85rem">Try Again</button>
       </div>
-      <div class="job-card">
-        <span class="job-type type-agency">Agency</span>
-        <h3>Community District Nurse</h3>
-        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Department of Health, KwaZulu-Natal</p>
-        <div class="job-meta">
-          <span>Category P</span><span>R22,000–R30,000/mo</span><span>Flexible Days</span>
-        </div>
-        <button class="btn-outline">View &amp; Apply</button>
+      <div id="jobsEmpty" style="display:none;text-align:center;padding:3rem 0;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;margin:0 auto .8rem;opacity:.3"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0H4"/></svg>
+        <p style="color:var(--gray);font-size:.9rem">No positions available right now. Check back soon.</p>
       </div>
-      <div class="job-card">
-        <span class="job-type type-full">Full Time</span>
-        <h3>Neonatal Nurse Specialist</h3>
-        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Life Entabeni Hospital, Durban</p>
-        <div class="job-meta">
-          <span>Specialist</span><span>R32,000–R42,000/mo</span><span>Permanent</span>
-        </div>
-        <button class="btn-outline">View &amp; Apply</button>
-      </div>
-      <div class="job-card">
-        <span class="job-type type-contract">Contract</span>
-        <h3>ICU Staff Nurse</h3>
-        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Groote Schuur Hospital, Cape Town</p>
-        <div class="job-meta">
-          <span>Category R</span><span>R240–R300/hr</span><span>Night Shifts</span>
-        </div>
-        <button class="btn-outline">View &amp; Apply</button>
-      </div>
-      <div class="job-card">
-        <span class="job-type type-agency">Agency</span>
-        <h3>Mental Health Nurse</h3>
-        <p class="location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Akeso Clinic, Pretoria</p>
-        <div class="job-meta">
-          <span>Registered</span><span>R200–R260/hr</span><span>Days &amp; Nights</span>
-        </div>
-        <button class="btn-outline">View &amp; Apply</button>
-      </div>
+      <div class="jobs-grid" id="jobsGrid" style="display:none"></div>
     </div>
   </section>
 
@@ -1628,6 +1588,54 @@
 
     </div>
   </div>
+
+  <script>
+    // ── JOB LISTINGS ──
+    const CONTRACT_LABELS = { full_time: 'Full Time', contract: 'Contract', locum: 'Agency' };
+    const CONTRACT_CLASSES = { full_time: 'type-full', contract: 'type-contract', locum: 'type-agency' };
+    const PROVINCE_NAMES = {
+      GP: 'Gauteng', WC: 'Western Cape', KZN: 'KwaZulu-Natal', EC: 'Eastern Cape',
+      FS: 'Free State', LP: 'Limpopo', MP: 'Mpumalanga', NC: 'Northern Cape', NW: 'North West'
+    };
+    const PIN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+
+    async function loadJobs() {
+      document.getElementById('jobsLoading').style.display = 'block';
+      document.getElementById('jobsError').style.display = 'none';
+      document.getElementById('jobsEmpty').style.display = 'none';
+      document.getElementById('jobsGrid').style.display = 'none';
+
+      try {
+        const res = await fetch('http://127.0.0.1:8000/api/jobs/');
+        if (!res.ok) throw new Error();
+        const jobs = await res.json();
+        document.getElementById('jobsLoading').style.display = 'none';
+        if (!jobs.length) {
+          document.getElementById('jobsEmpty').style.display = 'block';
+          return;
+        }
+        const grid = document.getElementById('jobsGrid');
+        grid.innerHTML = jobs.map(job => `
+          <div class="job-card">
+            <span class="job-type ${CONTRACT_CLASSES[job.contract_type] || 'type-full'}">${CONTRACT_LABELS[job.contract_type] || job.contract_type}</span>
+            <h3>${job.title}</h3>
+            <p class="location">${PIN_SVG}${job.facility_name}, ${job.city}</p>
+            <div class="job-meta">
+              <span style="text-transform:capitalize">${job.nursing_category}</span>
+              ${job.salary_display ? `<span>${job.salary_display}</span>` : ''}
+              <span>${PROVINCE_NAMES[job.province] || job.province}</span>
+            </div>
+            <button class="btn-outline" onclick="openNurseModal(event)">View &amp; Apply</button>
+          </div>`).join('');
+        grid.style.display = 'grid';
+      } catch(e) {
+        document.getElementById('jobsLoading').style.display = 'none';
+        document.getElementById('jobsError').style.display = 'block';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadJobs);
+  </script>
 
   <script>
     // ── EMPLOYER MODAL ──
