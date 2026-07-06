@@ -114,3 +114,29 @@ http://localhost:3000/frontend/login.html
         recipient_list=[settings.DEFAULT_FROM_EMAIL],
         fail_silently=True,
     )
+
+
+def send_job_application_admin_notification(user, application):
+    """Notify admin when a nurse submits a job application."""
+    send_mail(
+        subject=f'New Job Application — {application.job.title}',
+        message=f"""A nurse has applied for a position on NurseConnect.
+
+Application Details:
+- Nurse: {user.get_full_name()}
+- Email: {user.email}
+- Position: {application.job.title}
+- Facility: {application.job.facility_name}
+- Province: {application.job.get_province_display()}
+- Contract Type: {application.job.get_contract_type_display()}
+- Applied: {application.applied_at.strftime('%d %B %Y at %H:%M')}
+{f"- Cover Note: {application.cover_note}" if application.cover_note else ''}
+
+Please log in to the admin panel to review this application.
+
+http://localhost:3000/frontend/login.html
+""",
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[settings.DEFAULT_FROM_EMAIL],
+        fail_silently=True,
+    )

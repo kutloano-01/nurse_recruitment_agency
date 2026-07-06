@@ -2,7 +2,8 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.test import TestCase
 from accounts.models import User
-from jobs.models import Job
+from nurses.models import NurseProfile
+from jobs.models import Job, JobApplication
 
 
 def make_job(**overrides):
@@ -150,3 +151,96 @@ class JobManagementTests(TestCase):
         res = self.client.get('/api/jobs/admin/')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 3)
+
+
+class JobApplicationTests(TestCase):
+
+    def setUp(self):
+        self.client = APIClient()
+        self.nurse_user = User.objects.create_user(
+            email='nurse@test.com', password='Nurse1234!',
+            first_name='Thandi', last_name='Mokoena', role='nurse'
+        )
+        self.nurse_profile = NurseProfile.objects.create(
+            user=self.nurse_user,
+            id_number='9001015009087',
+            phone='0711234567',
+            sanc_number='SANC123456',
+            nursing_category='registered',
+            years_experience=5,
+            province='GP',
+            city='Johannesburg',
+        )
+        self.employer = User.objects.create_user(
+            email='employer@test.com', password='Emp1234!',
+            first_name='Sipho', last_name='Dlamini', role='employer'
+        )
+        self.job = make_job()
+        self.client.force_authenticate(user=self.nurse_user)
+
+    # ── Apply ─────────────────────────────────────────────────────────────
+
+    def test_nurse_can_apply_for_job(self):
+        res = self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res.data['job_title'], self.job.title)
+        self.assertEqual(res.data['status'], 'applied')
+
+    def test_application_with_cover_note_saves(self):
+        res = self.client.post('/api/jobs/applications/', {
+            'job': self.job.pk,
+            'cover_note': 'I have 5 years ICU experience and am available immediately.'
+        }, format='json')
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(JobApplication.objects.get(pk=res.data['id']).cover_note,
+                         'I have 5 years ICU experience and am available immediately.')
+
+    def test_application_stored_in_database(self):
+        self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        self.assertEqual(JobApplication.objects.filter(nurse=self.nurse_profile, job=self.job).count(), 1)
+
+    # ── Duplicate prevention ──────────────────────────────────────────────
+
+    def test_duplicate_application_rejected(self):
+        self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        res = self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('job', res.data)
+
+    def test_duplicate_does_not_create_second_record(self):
+        self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        self.assertEqual(JobApplication.objects.filter(nurse=self.nurse_profile, job=self.job).count(), 1)
+
+    # ── Inactive job ──────────────────────────────────────────────────────
+
+    def test_cannot_apply_to_filled_job(self):
+        filled_job = make_job(title='Filled Job', status='filled')
+        res = self.client.post('/api/jobs/applications/', {'job': filled_job.pk}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_cannot_apply_to_closed_job(self):
+        closed_job = make_job(title='Closed Job', status='closed')
+        res = self.client.post('/api/jobs/applications/', {'job': closed_job.pk}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # ── List applications ─────────────────────────────────────────────────
+
+    def test_nurse_can_view_own_applications(self):
+        JobApplication.objects.create(nurse=self.nurse_profile, job=self.job)
+        res = self.client.get('/api/jobs/applications/')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]['job_title'], self.job.title)
+
+    # ── Permission checks ─────────────────────────────────────────────────
+
+    def test_employer_cannot_apply_for_job(self):
+        self.client.force_authenticate(user=self.employer)
+        res = self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_unauthenticated_cannot_apply(self):
+        self.client.force_authenticate(user=None)
+        res = self.client.post('/api/jobs/applications/', {'job': self.job.pk}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

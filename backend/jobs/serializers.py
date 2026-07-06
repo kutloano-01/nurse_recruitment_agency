@@ -40,6 +40,17 @@ class JobApplicationSerializer(serializers.ModelSerializer):
         fields = ['id', 'job', 'job_title', 'facility', 'status', 'cover_note', 'applied_at']
         read_only_fields = ['status']
 
+    def validate_job(self, job):
+        if job.status != 'active':
+            raise serializers.ValidationError('This position is no longer accepting applications.')
+        return job
+
+    def validate(self, data):
+        nurse = self.context['request'].user.nurse_profile
+        if JobApplication.objects.filter(nurse=nurse, job=data['job']).exists():
+            raise serializers.ValidationError({'job': 'You have already applied for this position.'})
+        return data
+
     def create(self, validated_data):
         nurse = self.context['request'].user.nurse_profile
         return JobApplication.objects.create(nurse=nurse, **validated_data)

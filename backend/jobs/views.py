@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
 from core.permissions import IsNurseOrAdmin, IsAdminOrReadOnly, IsAdmin
+from core.emails import send_job_application_admin_notification
 from .models import Job, JobApplication
 from .serializers import JobSerializer, JobApplicationSerializer, AdminJobSerializer
 
@@ -40,7 +41,8 @@ class JobApplicationView(APIView):
     def post(self, request):
         serializer = JobApplicationSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            application = serializer.save()
+            send_job_application_admin_notification(request.user, application)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
