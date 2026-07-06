@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employer Dashboard — NurseConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0D1F3C; --white: #F8FAFC; --coral: #E8472A;
+      --sage: #7BA89A; --gray: #94a3b8; --border: #e2e8f0;
+      --bg: #f1f5f9; --text: #1e293b; --muted: #64748b;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 240px; background: var(--navy); display: flex;
+      flex-direction: column; flex-shrink: 0; position: fixed;
+      top: 0; left: 0; height: 100vh;
+    }
+    .sidebar-logo {
+      padding: 1.6rem 1.5rem 1.2rem;
+      font-family: 'Playfair Display', serif; font-size: 1.3rem;
+      color: var(--white); border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .sidebar-logo span { color: var(--coral); }
+    .sidebar-label {
+      padding: .8rem 1.5rem .4rem;
+      font-size: .68rem; font-weight: 600; letter-spacing: .08em;
+      color: rgba(255,255,255,.35); text-transform: uppercase;
+    }
+    .sidebar nav { flex: 1; padding: .5rem 0; }
+    .nav-item {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .7rem 1.5rem; color: rgba(255,255,255,.65);
+      font-size: .875rem; font-weight: 500; cursor: pointer;
+      transition: background .15s, color .15s; border: none;
+      background: none; width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.06); color: var(--white); }
+    .nav-item.active { background: rgba(232,71,42,.15); color: var(--white); }
+    .nav-item.active .nav-icon { color: var(--coral); }
+    .nav-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: .8; }
+    .sidebar-footer {
+      padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .sidebar-user { font-size: .8rem; color: rgba(255,255,255,.5); margin-bottom: .6rem; }
+    .sidebar-user strong { display: block; color: var(--white); font-size: .875rem; }
+    .btn-logout {
+      width: 100%; padding: .55rem; background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.1);
+      border-radius: 6px; font-size: .8rem; cursor: pointer;
+      font-family: 'Inter', sans-serif; transition: background .15s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,.12); color: var(--white); }
+
+    /* ── Main ── */
+    .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    .topbar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem; display: flex; align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--navy); }
+    .topbar-facility { font-size: .85rem; color: var(--muted); }
+
+    .content { padding: 2rem; flex: 1; }
+
+    /* ── Panels ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Stats row ── */
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card {
+      background: var(--white); border-radius: 10px;
+      padding: 1.2rem 1.4rem; border: 1px solid var(--border);
+    }
+    .stat-label { font-size: .75rem; color: var(--muted); font-weight: 500; margin-bottom: .4rem; }
+    .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--navy); line-height: 1; }
+    .stat-value.coral { color: var(--coral); }
+    .stat-value.sage { color: var(--sage); }
+
+    /* ── Section header ── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.2rem;
+    }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--navy); }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--white); border-radius: 10px;
+      border: 1px solid var(--border); overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f8fafc; }
+    th {
+      padding: .75rem 1rem; text-align: left;
+      font-size: .75rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+    }
+    td { padding: .85rem 1rem; font-size: .875rem; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+
+    .badge {
+      display: inline-block; padding: .25rem .65rem;
+      border-radius: 20px; font-size: .72rem; font-weight: 600;
+    }
+    .badge-open { background: #dbeafe; color: #1d4ed8; }
+    .badge-in_progress { background: #fef9c3; color: #854d0e; }
+    .badge-filled { background: #dcfce7; color: #166534; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+    .urgency-immediate { color: var(--coral); font-weight: 600; }
+    .urgency-urgent { color: #d97706; font-weight: 600; }
+    .urgency-planned { color: var(--muted); }
+
+    .empty-state {
+      padding: 3rem; text-align: center; color: var(--muted); font-size: .9rem;
+    }
+    .empty-state svg { margin-bottom: .8rem; opacity: .3; }
+
+    /* ── Create form ── */
+    .form-card {
+      background: var(--white); border-radius: 10px;
+      border: 1px solid var(--border); padding: 2rem; max-width: 680px;
+    }
+    .form-card h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--navy); margin-bottom: 1.5rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1.1rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { display: block; font-size: .78rem; font-weight: 600; color: var(--navy); margin-bottom: .35rem; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: .65rem .9rem;
+      border: 1.5px solid var(--border); border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: .875rem;
+      color: var(--text); outline: none; transition: border-color .2s;
+      background: var(--white);
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--navy); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-alert {
+      padding: .75rem 1rem; border-radius: 6px; font-size: .85rem;
+      margin-bottom: 1rem; display: none;
+    }
+    .form-alert.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .form-alert.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .form-alert.visible { display: block; }
+    .form-actions { display: flex; gap: .75rem; margin-top: .5rem; }
+    .btn-primary {
+      padding: .7rem 1.6rem; background: var(--coral); color: var(--white);
+      border: none; border-radius: 6px; font-family: 'Inter', sans-serif;
+      font-weight: 600; font-size: .9rem; cursor: pointer; transition: background .2s;
+    }
+    .btn-primary:hover { background: #c73b21; }
+    .btn-primary:disabled { background: var(--gray); cursor: not-allowed; }
+    .btn-secondary {
+      padding: .7rem 1.4rem; background: transparent; color: var(--navy);
+      border: 1.5px solid var(--border); border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-weight: 600;
+      font-size: .9rem; cursor: pointer; transition: border-color .2s;
+    }
+    .btn-secondary:hover { border-color: var(--navy); }
+
+    /* ── Loading ── */
+    .loading { text-align: center; padding: 2rem; color: var(--muted); font-size: .875rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">Nurse<span>Connect</span></div>
+    <nav>
+      <div class="sidebar-label">Menu</div>
+      <button class="nav-item active" onclick="showPanel('overview')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Overview
+      </button>
+      <button class="nav-item" onclick="showPanel('requests')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        Active Requests
+      </button>
+      <button class="nav-item" onclick="showPanel('create')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        New Request
+      </button>
+      <button class="nav-item" onclick="showPanel('history')">
+        <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Request History
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <strong id="sidebarName">—</strong>
+        Employer Account
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="panelTitle">Overview</div>
+        <div class="topbar-facility" id="topbarFacility">Loading facility...</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- Overview Panel -->
+      <div class="panel active" id="panel-overview">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Total Requests</div>
+            <div class="stat-value" id="statTotal">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Open</div>
+            <div class="stat-value coral" id="statOpen">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">In Progress</div>
+            <div class="stat-value" style="color:#d97706" id="statInProgress">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Filled</div>
+            <div class="stat-value sage" id="statFilled">—</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h2>Recent Requests</h2>
+          <button class="btn-secondary" onclick="showPanel('create')" style="font-size:.8rem;padding:.5rem 1rem;">+ New Request</button>
+        </div>
+        <div class="table-wrap">
+          <div id="overviewTableBody"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- Active Requests Panel -->
+      <div class="panel" id="panel-requests">
+        <div class="section-header">
+          <h2>Active Requests</h2>
+          <button class="btn-secondary" onclick="showPanel('create')" style="font-size:.8rem;padding:.5rem 1rem;">+ New Request</button>
+        </div>
+        <div class="table-wrap">
+          <div id="requestsTableBody"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- Create Request Panel -->
+      <div class="panel" id="panel-create">
+        <div class="form-card">
+          <h2>New Staffing Request</h2>
+          <div class="form-alert error" id="createAlert"></div>
+          <div class="form-alert success" id="createSuccess"></div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nursing Category <span style="color:var(--coral)">*</span></label>
+              <select id="fCategory">
+                <option value="">Select category</option>
+                <option value="registered">Registered Nurse (RN)</option>
+                <option value="enrolled">Enrolled Nurse (EN)</option>
+                <option value="auxiliary">Enrolled Nursing Auxiliary (ENA)</option>
+                <option value="midwife">Midwife</option>
+                <option value="specialist">Clinical Nurse Specialist</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Speciality</label>
+              <input type="text" id="fSpeciality" placeholder="e.g. ICU, Theatre, Paediatrics" />
+            </div>
+            <div class="form-group">
+              <label>Number of Nurses <span style="color:var(--coral)">*</span></label>
+              <input type="number" id="fNurses" min="1" max="100" placeholder="1" />
+            </div>
+            <div class="form-group">
+              <label>Shift Type <span style="color:var(--coral)">*</span></label>
+              <select id="fShift">
+                <option value="">Select shift</option>
+                <option value="day">Day</option>
+                <option value="night">Night</option>
+                <option value="both">Both</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Start Date <span style="color:var(--coral)">*</span></label>
+              <input type="date" id="fStartDate" />
+            </div>
+            <div class="form-group">
+              <label>End Date</label>
+              <input type="date" id="fEndDate" />
+            </div>
+            <div class="form-group full">
+              <label>Urgency <span style="color:var(--coral)">*</span></label>
+              <select id="fUrgency">
+                <option value="">Select urgency</option>
+                <option value="immediate">Immediate (within 24hrs)</option>
+                <option value="urgent">Urgent (within 48hrs)</option>
+                <option value="planned">Planned (more than 48hrs)</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>Additional Notes</label>
+              <textarea id="fNotes" placeholder="Any specific requirements, ward details, or instructions..."></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-primary" id="btnSubmit" onclick="submitRequest()">Submit Request</button>
+            <button class="btn-secondary" onclick="resetForm()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Panel -->
+      <div class="panel" id="panel-history">
+        <div class="section-header">
+          <h2>Request History</h2>
+        </div>
+        <div class="table-wrap">
+          <div id="historyTableBody"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://127.0.0.1:8000';
+    let allRequests = [];
+
+    const CATEGORY_LABELS = {
+      registered: 'Registered Nurse (RN)',
+      enrolled: 'Enrolled Nurse (EN)',
+      auxiliary: 'Enrolled Nursing Auxiliary',
+      midwife: 'Midwife',
+      specialist: 'Clinical Nurse Specialist',
+    };
+
+    const URGENCY_LABELS = {
+      immediate: 'Immediate',
+      urgent: 'Urgent',
+      planned: 'Planned',
+    };
+
+    // ── Auth guard ────────────────────────────────────────────────────────
+    const user = JSON.parse(localStorage.getItem('nc_employer') || 'null');
+    if (!user || user.role !== 'employer') {
+      window.location.href = 'employer-login.html';
+    } else {
+      document.getElementById('sidebarName').textContent = `${user.first_name} ${user.last_name}`;
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadProfile();
+      await loadRequests();
+    });
+
+    async function loadProfile() {
+      try {
+        const res = await fetch(`${API}/api/employers/profile/`, { credentials: 'include' });
+        if (res.ok) {
+          const p = await res.json();
+          document.getElementById('topbarFacility').textContent = `${p.facility_name} · ${p.city}`;
+        }
+      } catch(e) {}
+    }
+
+    async function loadRequests() {
+      try {
+        const res = await fetch(`${API}/api/employers/requests/`, { credentials: 'include' });
+        if (!res.ok) throw new Error();
+        allRequests = await res.json();
+        renderOverview();
+        renderRequests();
+        renderHistory();
+      } catch(e) {
+        ['overviewTableBody','requestsTableBody','historyTableBody'].forEach(id => {
+          document.getElementById(id).innerHTML = '<div class="empty-state">Failed to load requests. Please refresh.</div>';
+        });
+      }
+    }
+
+    // ── Render helpers ────────────────────────────────────────────────────
+    function buildTable(rows) {
+      if (!rows.length) return `
+        <div class="empty-state">
+          <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <div>No requests found.</div>
+        </div>`;
+
+      return `<table>
+        <thead><tr>
+          <th>Category</th><th>Speciality</th><th>Nurses</th>
+          <th>Shift</th><th>Start Date</th><th>Urgency</th><th>Status</th>
+        </tr></thead>
+        <tbody>${rows.map(r => `
+          <tr>
+            <td>${CATEGORY_LABELS[r.nursing_category] || r.nursing_category}</td>
+            <td>${r.speciality || '—'}</td>
+            <td>${r.number_of_nurses}</td>
+            <td style="text-transform:capitalize">${r.shift_type}</td>
+            <td>${formatDate(r.start_date)}</td>
+            <td class="urgency-${r.urgency}">${URGENCY_LABELS[r.urgency] || r.urgency}</td>
+            <td><span class="badge badge-${r.status}">${r.status.replace('_', ' ')}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+    }
+
+    function renderOverview() {
+      const total = allRequests.length;
+      const open = allRequests.filter(r => r.status === 'open').length;
+      const inProgress = allRequests.filter(r => r.status === 'in_progress').length;
+      const filled = allRequests.filter(r => r.status === 'filled').length;
+
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statOpen').textContent = open;
+      document.getElementById('statInProgress').textContent = inProgress;
+      document.getElementById('statFilled').textContent = filled;
+
+      const recent = [...allRequests].reverse().slice(0, 5);
+      document.getElementById('overviewTableBody').innerHTML = buildTable(recent);
+    }
+
+    function renderRequests() {
+      const active = allRequests.filter(r => r.status === 'open' || r.status === 'in_progress');
+      document.getElementById('requestsTableBody').innerHTML = buildTable(active);
+    }
+
+    function renderHistory() {
+      const done = allRequests.filter(r => r.status === 'filled' || r.status === 'cancelled');
+      document.getElementById('historyTableBody').innerHTML = buildTable(done);
+    }
+
+    // ── Create request ────────────────────────────────────────────────────
+    async function submitRequest() {
+      const alertEl = document.getElementById('createAlert');
+      const successEl = document.getElementById('createSuccess');
+      const btn = document.getElementById('btnSubmit');
+
+      alertEl.classList.remove('visible');
+      successEl.classList.remove('visible');
+
+      const category = document.getElementById('fCategory').value;
+      const nurses = document.getElementById('fNurses').value;
+      const shift = document.getElementById('fShift').value;
+      const startDate = document.getElementById('fStartDate').value;
+      const urgency = document.getElementById('fUrgency').value;
+
+      if (!category || !nurses || !shift || !startDate || !urgency) {
+        alertEl.textContent = 'Please fill in all required fields.';
+        alertEl.classList.add('visible');
+        return;
+      }
+
+      const payload = {
+        nursing_category: category,
+        speciality: document.getElementById('fSpeciality').value,
+        number_of_nurses: parseInt(nurses),
+        shift_type: shift,
+        start_date: startDate,
+        end_date: document.getElementById('fEndDate').value || null,
+        urgency,
+        additional_notes: document.getElementById('fNotes').value,
+      };
+
+      btn.disabled = true; btn.textContent = 'Submitting...';
+
+      try {
+        const res = await fetch(`${API}/api/employers/requests/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          const msg = Object.values(data).flat().join(' ');
+          alertEl.textContent = msg || 'Failed to submit request.';
+          alertEl.classList.add('visible');
+        } else {
+          successEl.textContent = 'Staffing request submitted successfully.';
+          successEl.classList.add('visible');
+          resetForm();
+          await loadRequests();
+        }
+      } catch(e) {
+        alertEl.textContent = 'Connection error. Please try again.';
+        alertEl.classList.add('visible');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Submit Request';
+      }
+    }
+
+    function resetForm() {
+      ['fCategory','fSpeciality','fNurses','fShift','fStartDate','fEndDate','fUrgency','fNotes']
+        .forEach(id => { document.getElementById(id).value = ''; });
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────
+    const PANEL_TITLES = {
+      overview: 'Overview',
+      requests: 'Active Requests',
+      create: 'New Staffing Request',
+      history: 'Request History',
+    };
+
+    function showPanel(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(`panel-${name}`).classList.add('active');
+      document.querySelectorAll('.nav-item')[
+        ['overview','requests','create','history'].indexOf(name)
+      ].classList.add('active');
+      document.getElementById('panelTitle').textContent = PANEL_TITLES[name];
+
+      document.getElementById('createAlert').classList.remove('visible');
+      document.getElementById('createSuccess').classList.remove('visible');
+    }
+
+    // ── Logout ────────────────────────────────────────────────────────────
+    async function handleLogout() {
+      try {
+        await fetch(`${API}/api/accounts/logout/`, { method: 'POST', credentials: 'include' });
+      } catch(e) {}
+      localStorage.removeItem('nc_employer');
+      window.location.href = 'employer-login.html';
+    }
+
+    // ── Utils ─────────────────────────────────────────────────────────────
+    function formatDate(d) {
+      if (!d) return '—';
+      const [y, m, day] = d.split('-');
+      return `${day}/${m}/${y}`;
+    }
+  </script>
+
+</body>
+</html>
