@@ -1,4 +1,4 @@
-# NurseConnect — South Afr"ican Nurse Recruitment Agency
+# NurseConnect — South African Nurse Recruitment Agency
 
 A full-stack web platform for a South African nursing recruitment agency. The platform connects SANC-registered nurses with public and private healthcare facilities across all nine provinces.
 
