@@ -3,9 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
-from core.permissions import IsNurseOrAdmin, IsAdminOrReadOnly
+from core.permissions import IsNurseOrAdmin, IsAdminOrReadOnly, IsAdmin
 from .models import Job, JobApplication
-from .serializers import JobSerializer, JobApplicationSerializer
+from .serializers import JobSerializer, JobApplicationSerializer, AdminJobSerializer
 
 
 class JobListView(APIView):
@@ -43,3 +43,40 @@ class JobApplicationView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminJobListView(APIView):
+    permission_classes = [IsAdmin]
+
+    def get(self, request):
+        jobs = Job.objects.exclude(status='archived')
+        return Response(AdminJobSerializer(jobs, many=True).data)
+
+    def post(self, request):
+        serializer = AdminJobSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminJobDetailView(APIView):
+    permission_classes = [IsAdmin]
+
+    def get(self, request, pk):
+        job = get_object_or_404(Job, pk=pk)
+        return Response(AdminJobSerializer(job).data)
+
+    def patch(self, request, pk):
+        job = get_object_or_404(Job, pk=pk)
+        serializer = AdminJobSerializer(job, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        job = get_object_or_404(Job, pk=pk)
+        job.status = 'archived'
+        job.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

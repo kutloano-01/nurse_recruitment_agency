@@ -13,6 +13,7 @@ class Job(models.Model):
         ('active', 'Active'),
         ('filled', 'Filled'),
         ('closed', 'Closed'),
+        ('archived', 'Archived'),
     ]
 
     PROVINCE_CHOICES = [
