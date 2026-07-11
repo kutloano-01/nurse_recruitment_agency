@@ -44,9 +44,7 @@
     .nav-item.active { background: rgba(232,71,42,.15); color: var(--white); }
     .nav-item.active svg { color: var(--coral); }
     .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .sidebar-footer {
-      padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,.08);
-    }
+    .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,.08); }
     .sidebar-user { font-size: .8rem; color: rgba(255,255,255,.5); margin-bottom: .6rem; }
     .sidebar-user strong { display: block; color: var(--white); font-size: .875rem; }
     .btn-logout {
@@ -94,9 +92,9 @@
       display: inline-block; padding: .25rem .65rem;
       border-radius: 20px; font-size: .72rem; font-weight: 600;
     }
-    .badge-active   { background: #dcfce7; color: #166534; }
-    .badge-filled   { background: #dbeafe; color: #1d4ed8; }
-    .badge-closed   { background: #f1f5f9; color: #64748b; }
+    .badge-active { background: #dcfce7; color: #166534; }
+    .badge-filled { background: #dbeafe; color: #1d4ed8; }
+    .badge-closed { background: #f1f5f9; color: #64748b; }
 
     .empty-state { padding: 3rem; text-align: center; color: var(--muted); font-size: .9rem; }
     .empty-state svg { display: block; margin: 0 auto .8rem; opacity: .3; }
@@ -124,6 +122,7 @@
       font-size: .78rem; cursor: pointer; transition: all .2s;
     }
     .btn-danger:hover { background: #fef2f2; border-color: #b91c1c; }
+    .btn-danger:disabled { opacity: .5; cursor: not-allowed; }
     .btn-edit {
       padding: .4rem .9rem; background: transparent; color: var(--navy);
       border: 1.5px solid var(--border); border-radius: 6px;
@@ -153,10 +152,24 @@
     .form-alert {
       padding: .75rem 1rem; border-radius: 6px; font-size: .85rem; margin-bottom: 1rem; display: none;
     }
-    .form-alert.error  { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .form-alert.error   { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .form-alert.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
     .form-alert.visible { display: block; }
     .form-actions { display: flex; gap: .75rem; margin-top: .5rem; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      background: var(--navy); color: var(--white);
+      padding: .8rem 1.4rem; border-radius: 8px;
+      font-size: .875rem; font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      opacity: 0; transform: translateY(8px);
+      transition: opacity .25s, transform .25s;
+      pointer-events: none; z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.toast-error { background: #b91c1c; }
 
     /* ── Status select inline ── */
     .status-select {
@@ -164,6 +177,14 @@
       font-family: 'Inter', sans-serif; font-size: .8rem; color: var(--text);
       background: var(--white); cursor: pointer; outline: none;
     }
+
+    /* ── Applications panel ── */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .85rem; font-weight: 600; color: var(--muted);
+      background: none; border: none; cursor: pointer; margin-bottom: 1rem; padding: 0;
+    }
+    .back-btn:hover { color: var(--navy); }
   </style>
 </head>
 <body>
@@ -171,17 +192,17 @@
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-logo">Nurse<span>Connect</span></div>
-    <nav>
+    <nav id="sidebarNav">
       <div class="sidebar-label">Admin</div>
-      <button class="nav-item active" onclick="showPanel('jobs')">
+      <button class="nav-item active" data-panel="jobs">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         Jobs
       </button>
-      <button class="nav-item" onclick="showPanel('create-job')">
+      <button class="nav-item" data-panel="create-job">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
         Post a Job
       </button>
-      <button class="nav-item" id="nav-applications" onclick="showPanel('applications')" style="display:none">
+      <button class="nav-item" data-panel="applications" id="nav-applications" style="display:none">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
         Applications
       </button>
@@ -191,7 +212,7 @@
         <strong id="sidebarName">—</strong>
         Administrator
       </div>
-      <button class="btn-logout" onclick="handleLogout()">Sign Out</button>
+      <button class="btn-logout" id="btnLogout">Sign Out</button>
     </div>
   </aside>
 
@@ -210,34 +231,34 @@
       <div class="panel active" id="panel-jobs">
         <div class="section-header">
           <h2>All Job Listings</h2>
-          <button class="btn-primary" onclick="showPanel('create-job')">+ Post a Job</button>
+          <button class="btn-primary" data-panel="create-job">+ Post a Job</button>
         </div>
         <div class="table-wrap" id="jobsTable">
-          <div class="loading">Loading...</div>
+          <div class="loading">Loading…</div>
         </div>
       </div>
 
-      <!-- Create Job Panel -->
+      <!-- Create / Edit Job Panel -->
       <div class="panel" id="panel-create-job">
         <div class="form-card">
           <h2 id="formTitle">Post a New Job</h2>
-          <div class="form-alert error"  id="jobAlert"></div>
+          <div class="form-alert error"   id="jobAlert"></div>
           <div class="form-alert success" id="jobSuccess"></div>
           <div class="form-row">
             <div class="form-group full">
-              <label>Job Title <span style="color:var(--coral)">*</span></label>
-              <input type="text" id="fTitle" placeholder="e.g. ICU Registered Nurse" />
+              <label for="fTitle">Job Title <span style="color:var(--coral)">*</span></label>
+              <input type="text" id="fTitle" placeholder="e.g. ICU Registered Nurse" autocomplete="off" />
             </div>
             <div class="form-group">
-              <label>Facility Name <span style="color:var(--coral)">*</span></label>
-              <input type="text" id="fFacility" placeholder="e.g. Netcare Sunninghill" />
+              <label for="fFacility">Facility Name <span style="color:var(--coral)">*</span></label>
+              <input type="text" id="fFacility" placeholder="e.g. Netcare Sunninghill" autocomplete="off" />
             </div>
             <div class="form-group">
-              <label>City <span style="color:var(--coral)">*</span></label>
-              <input type="text" id="fCity" placeholder="e.g. Johannesburg" />
+              <label for="fCity">City <span style="color:var(--coral)">*</span></label>
+              <input type="text" id="fCity" placeholder="e.g. Johannesburg" autocomplete="off" />
             </div>
             <div class="form-group">
-              <label>Province <span style="color:var(--coral)">*</span></label>
+              <label for="fProvince">Province <span style="color:var(--coral)">*</span></label>
               <select id="fProvince">
                 <option value="">Select province</option>
                 <option value="GP">Gauteng</option>
@@ -252,7 +273,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Contract Type <span style="color:var(--coral)">*</span></label>
+              <label for="fContractType">Contract Type <span style="color:var(--coral)">*</span></label>
               <select id="fContractType">
                 <option value="">Select type</option>
                 <option value="full_time">Full Time</option>
@@ -261,7 +282,7 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Nursing Category <span style="color:var(--coral)">*</span></label>
+              <label for="fCategory">Nursing Category <span style="color:var(--coral)">*</span></label>
               <select id="fCategory">
                 <option value="">Select category</option>
                 <option value="registered">Registered Nurse</option>
@@ -272,11 +293,11 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Salary Display</label>
-              <input type="text" id="fSalaryDisplay" placeholder="e.g. R30 000 – R38 000 pm" />
+              <label for="fSalaryDisplay">Salary Display</label>
+              <input type="text" id="fSalaryDisplay" placeholder="e.g. R30 000 – R38 000 pm" autocomplete="off" />
             </div>
             <div class="form-group">
-              <label>Status</label>
+              <label for="fStatus">Status</label>
               <select id="fStatus">
                 <option value="active">Active</option>
                 <option value="filled">Filled</option>
@@ -284,109 +305,251 @@
               </select>
             </div>
             <div class="form-group full">
-              <label>Job Description <span style="color:var(--coral)">*</span></label>
-              <textarea id="fDescription" placeholder="Describe the role, responsibilities, and environment..."></textarea>
+              <label for="fDescription">Job Description <span style="color:var(--coral)">*</span></label>
+              <textarea id="fDescription" placeholder="Describe the role, responsibilities, and environment…"></textarea>
             </div>
             <div class="form-group full">
-              <label>Requirements</label>
-              <textarea id="fRequirements" placeholder="Minimum qualifications, experience, certifications required..."></textarea>
+              <label for="fRequirements">Requirements</label>
+              <textarea id="fRequirements" placeholder="Minimum qualifications, experience, certifications required…"></textarea>
             </div>
           </div>
           <div class="form-actions">
-            <button class="btn-primary" id="btnSaveJob" onclick="saveJob()">Post Job</button>
-            <button class="btn-secondary" onclick="cancelEdit()">Cancel</button>
+            <button class="btn-primary" id="btnSaveJob">Post Job</button>
+            <button class="btn-secondary" id="btnCancelEdit">Cancel</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Applications Panel -->
+      <div class="panel" id="panel-applications">
+        <button class="back-btn" data-panel="jobs">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          Back to Jobs
+        </button>
+        <div class="section-header">
+          <h2 id="applicationsHeading">Applications</h2>
+        </div>
+        <div class="table-wrap" id="applicationsTable">
+          <div class="loading">Loading…</div>
         </div>
       </div>
 
     </div>
   </div>
 
+  <!-- Toast -->
+  <div id="toast"></div>
+
   <script>
+    'use strict';
+
     const API = 'http://127.0.0.1:8000';
-    let editingJobId = null;
 
     const CONTRACT_LABELS = { full_time: 'Full Time', contract: 'Contract', locum: 'Locum / Agency' };
-    const PROVINCE_NAMES = {
+    const PROVINCE_NAMES  = {
       GP: 'Gauteng', WC: 'Western Cape', KZN: 'KwaZulu-Natal', EC: 'Eastern Cape',
       FS: 'Free State', LP: 'Limpopo', MP: 'Mpumalanga', NC: 'Northern Cape', NW: 'North West',
     };
+    const PANEL_TITLES = { jobs: 'Jobs', 'create-job': 'Post a Job', applications: 'Applications' };
 
-    // ── Auth guard ────────────────────────────────────────────────────────
-    const user = JSON.parse(localStorage.getItem('nc_user') || 'null');
-    if (!user || user.role !== 'admin') {
-      window.location.href = 'login.html';
-    } else {
-      document.getElementById('sidebarName').textContent = `${user.first_name} ${user.last_name}`;
+    let editingJobId  = null;
+    let toastTimer    = null;
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+
+    /** Safely escape text for insertion into the DOM via textContent */
+    function esc(str) {
+      return String(str ?? '');
     }
 
-    window.addEventListener('DOMContentLoaded', loadJobs);
+    /** Build a td element with textContent (safe, no XSS) */
+    function td(text, opts = {}) {
+      const cell = document.createElement('td');
+      if (opts.html) {
+        cell.innerHTML = opts.html; // only used for known-safe markup we construct
+      } else {
+        cell.textContent = esc(text);
+      }
+      if (opts.style) cell.style.cssText = opts.style;
+      return cell;
+    }
 
-    // ── Load jobs ─────────────────────────────────────────────────────────
+    function showToast(msg, isError = false) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'show' + (isError ? ' toast-error' : '');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { t.className = ''; }, 3000);
+    }
+
+    // ── Auth guard ────────────────────────────────────────────────────────
+    // NOTE: localStorage auth is UI-only. The backend must enforce admin
+    // permissions on every API call — never trust client-side role claims.
+    let currentUser = null;
+    try { currentUser = JSON.parse(localStorage.getItem('nc_user')); } catch (_) {}
+
+    if (!currentUser || currentUser.role !== 'admin') {
+      window.location.href = 'login.html';
+    } else {
+      document.getElementById('sidebarName').textContent =
+        `${esc(currentUser.first_name)} ${esc(currentUser.last_name)}`;
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────
+    function showPanel(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      const panel = document.getElementById(`panel-${name}`);
+      if (panel) panel.classList.add('active');
+
+      // Match nav item by data-panel attribute — no fragile index lookup
+      const navBtn = document.querySelector(`.nav-item[data-panel="${name}"]`);
+      if (navBtn) navBtn.classList.add('active');
+
+      document.getElementById('panelTitle').textContent = PANEL_TITLES[name] ?? name;
+    }
+
+    // Delegate nav clicks from sidebar and any [data-panel] button
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('[data-panel]');
+      if (!btn) return;
+      const target = btn.dataset.panel;
+      if (target === 'create-job' && btn.closest('.section-header')) {
+        // "Post a Job" button in the jobs list — ensure form is in create mode
+        resetJobForm();
+      }
+      showPanel(target);
+    });
+
+    // ── Jobs ──────────────────────────────────────────────────────────────
     async function loadJobs() {
-      document.getElementById('jobsTable').innerHTML = '<div class="loading">Loading...</div>';
+      document.getElementById('jobsTable').innerHTML = '<div class="loading">Loading…</div>';
       try {
         const res = await fetch(`${API}/api/admin/jobs/`, { credentials: 'include' });
-        if (!res.ok) throw new Error();
+        if (res.status === 401 || res.status === 403) {
+          window.location.href = 'login.html';
+          return;
+        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const jobs = await res.json();
         renderJobsTable(jobs);
-      } catch(e) {
+      } catch (e) {
         document.getElementById('jobsTable').innerHTML =
           '<div class="empty-state">Failed to load jobs. Please refresh.</div>';
       }
     }
 
     function renderJobsTable(jobs) {
+      const wrap = document.getElementById('jobsTable');
+
       if (!jobs.length) {
-        document.getElementById('jobsTable').innerHTML = `
+        wrap.innerHTML = `
           <div class="empty-state">
-            <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745
+                   M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01
+                   M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
             No jobs posted yet.
           </div>`;
         return;
       }
-      document.getElementById('jobsTable').innerHTML = `
-        <table>
-          <thead><tr>
-            <th>Title</th><th>Facility</th><th>Province</th>
-            <th>Type</th><th>Apps</th><th>Status</th><th>Actions</th>
-          </tr></thead>
-          <tbody>
-            ${jobs.map(j => `
-              <tr>
-                <td><strong>${j.title}</strong><br><span style="color:var(--muted);font-size:.8rem">${j.nursing_category}</span></td>
-                <td>${j.facility_name}</td>
-                <td>${PROVINCE_NAMES[j.province] || j.province}<br><span style="color:var(--muted);font-size:.8rem">${j.city}</span></td>
-                <td>${CONTRACT_LABELS[j.contract_type] || j.contract_type}</td>
-  
-                <td>
-                  <button class="btn-edit" onclick="viewApplications(${j.id}, '${j.title.replace(/'/g, "\\'")}')">View</button>
-                </td>
-                  <td>
-                  <button class="btn-edit" onclick="editJob(${JSON.stringify(j).replace(/"/g, '&quot;')})">Edit</button>
-                  <button class="btn-danger" onclick="archiveJob(${j.id})">Archive</button>
-                </td>
-              </tr>`).join('')}
-          </tbody>
-        </table>`;
+
+      const table = document.createElement('table');
+
+      // Header
+      const thead = table.createTHead();
+      const hRow  = thead.insertRow();
+      ['Title', 'Facility', 'Province', 'Type', 'Status', 'Applications', 'Actions'].forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        hRow.appendChild(th);
+      });
+
+      // Body — all cell content set via textContent to prevent XSS
+      const tbody = table.createTBody();
+      jobs.forEach(j => {
+        const row = tbody.insertRow();
+
+        // Title + category
+        const titleCell = row.insertCell();
+        const strong = document.createElement('strong');
+        strong.textContent = esc(j.title);
+        const sub = document.createElement('span');
+        sub.textContent = esc(j.nursing_category);
+        sub.style.cssText = 'display:block;color:var(--muted);font-size:.8rem';
+        titleCell.append(strong, sub);
+
+        // Facility
+        row.appendChild(td(j.facility_name));
+
+        // Province + city
+        const provCell = row.insertCell();
+        const provText = document.createTextNode(PROVINCE_NAMES[j.province] ?? esc(j.province));
+        const citySpan = document.createElement('span');
+        citySpan.textContent = esc(j.city);
+        citySpan.style.cssText = 'display:block;color:var(--muted);font-size:.8rem';
+        provCell.append(provText, citySpan);
+
+        // Contract type
+        row.appendChild(td(CONTRACT_LABELS[j.contract_type] ?? j.contract_type));
+
+        // Status badge
+        const statusCell = row.insertCell();
+        const badge = document.createElement('span');
+        const statusKey = ['active','filled','closed'].includes(j.status) ? j.status : 'closed';
+        badge.className = `badge badge-${statusKey}`;
+        badge.textContent = statusKey.charAt(0).toUpperCase() + statusKey.slice(1);
+        statusCell.appendChild(badge);
+
+        // Applications
+        const appsCell = row.insertCell();
+        const count = j.application_count ?? 0;
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'btn-edit';
+        viewBtn.textContent = count > 0 ? `View (${count})` : 'View (0)';
+        viewBtn.addEventListener('click', () => viewApplications(j.id, j.title));
+        appsCell.appendChild(viewBtn);
+
+        // Actions
+        const actCell = row.insertCell();
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-edit';
+        editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', () => editJob(j));
+
+        const archBtn = document.createElement('button');
+        archBtn.className = 'btn-danger';
+        archBtn.textContent = 'Archive';
+        archBtn.addEventListener('click', () => archiveJob(j.id, archBtn));
+
+        actCell.append(editBtn, archBtn);
+      });
+
+      wrap.innerHTML = '';
+      wrap.appendChild(table);
     }
 
-    // ── Save job (create or edit) ─────────────────────────────────────────
+    // ── Save job (create or update) ───────────────────────────────────────
+    document.getElementById('btnSaveJob').addEventListener('click', saveJob);
+
     async function saveJob() {
-      const alertEl  = document.getElementById('jobAlert');
+      const alertEl   = document.getElementById('jobAlert');
       const successEl = document.getElementById('jobSuccess');
-      const btn = document.getElementById('btnSaveJob');
+      const btn       = document.getElementById('btnSaveJob');
 
       alertEl.classList.remove('visible');
       successEl.classList.remove('visible');
 
-      const title       = document.getElementById('fTitle').value.trim();
-      const facility    = document.getElementById('fFacility').value.trim();
-      const city        = document.getElementById('fCity').value.trim();
-      const province    = document.getElementById('fProvince').value;
+      const title        = document.getElementById('fTitle').value.trim();
+      const facility     = document.getElementById('fFacility').value.trim();
+      const city         = document.getElementById('fCity').value.trim();
+      const province     = document.getElementById('fProvince').value;
       const contractType = document.getElementById('fContractType').value;
-      const category    = document.getElementById('fCategory').value;
-      const description = document.getElementById('fDescription').value.trim();
+      const category     = document.getElementById('fCategory').value;
+      const description  = document.getElementById('fDescription').value.trim();
 
       if (!title || !facility || !city || !province || !contractType || !category || !description) {
         alertEl.textContent = 'Please fill in all required fields.';
@@ -398,18 +561,18 @@
         title, facility_name: facility, city, province,
         contract_type: contractType, nursing_category: category,
         salary_display: document.getElementById('fSalaryDisplay').value.trim(),
-        status: document.getElementById('fStatus').value,
+        status:         document.getElementById('fStatus').value,
         description,
-        requirements: document.getElementById('fRequirements').value.trim(),
+        requirements:   document.getElementById('fRequirements').value.trim(),
       };
 
-      btn.disabled = true;
-      btn.textContent = editingJobId ? 'Saving...' : 'Posting...';
+      btn.disabled    = true;
+      btn.textContent = editingJobId ? 'Saving…' : 'Posting…';
 
       try {
         const url    = editingJobId ? `${API}/api/admin/jobs/${editingJobId}/` : `${API}/api/admin/jobs/`;
         const method = editingJobId ? 'PATCH' : 'POST';
-        const res = await fetch(url, {
+        const res    = await fetch(url, {
           method, credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -419,16 +582,16 @@
           alertEl.textContent = Object.values(data).flat().join(' ') || 'Failed to save job.';
           alertEl.classList.add('visible');
         } else {
-          successEl.textContent = editingJobId ? 'Job updated successfully.' : 'Job posted successfully.';
-          successEl.classList.add('visible');
+          showToast(editingJobId ? 'Job updated successfully.' : 'Job posted successfully.');
           resetJobForm();
+          showPanel('jobs');
           await loadJobs();
         }
-      } catch(e) {
+      } catch (e) {
         alertEl.textContent = 'Connection error. Please try again.';
         alertEl.classList.add('visible');
       } finally {
-        btn.disabled = false;
+        btn.disabled    = false;
         btn.textContent = editingJobId ? 'Save Changes' : 'Post Job';
       }
     }
@@ -436,81 +599,163 @@
     // ── Edit job ──────────────────────────────────────────────────────────
     function editJob(job) {
       editingJobId = job.id;
-      document.getElementById('fTitle').value         = job.title;
-      document.getElementById('fFacility').value      = job.facility_name;
-      document.getElementById('fCity').value          = job.city;
-      document.getElementById('fProvince').value      = job.province;
-      document.getElementById('fContractType').value  = job.contract_type;
-      document.getElementById('fCategory').value      = job.nursing_category;
-      document.getElementById('fSalaryDisplay').value = job.salary_display || '';
-      document.getElementById('fStatus').value        = job.status;
-      document.getElementById('fDescription').value   = job.description;
-      document.getElementById('fRequirements').value  = job.requirements || '';
+      document.getElementById('fTitle').value          = esc(job.title);
+      document.getElementById('fFacility').value       = esc(job.facility_name);
+      document.getElementById('fCity').value           = esc(job.city);
+      document.getElementById('fProvince').value       = esc(job.province);
+      document.getElementById('fContractType').value   = esc(job.contract_type);
+      document.getElementById('fCategory').value       = esc(job.nursing_category);
+      document.getElementById('fSalaryDisplay').value  = esc(job.salary_display);
+      document.getElementById('fStatus').value         = esc(job.status);
+      document.getElementById('fDescription').value    = esc(job.description);
+      document.getElementById('fRequirements').value   = esc(job.requirements);
       document.getElementById('formTitle').textContent  = 'Edit Job';
       document.getElementById('btnSaveJob').textContent = 'Save Changes';
       showPanel('create-job');
     }
 
-    function cancelEdit() {
+    document.getElementById('btnCancelEdit').addEventListener('click', () => {
       resetJobForm();
       showPanel('jobs');
-    }
+    });
 
     function resetJobForm() {
       editingJobId = null;
-      ['fTitle','fFacility','fCity','fProvince','fContractType','fCategory',
-       'fSalaryDisplay','fDescription','fRequirements'].forEach(id => {
+      ['fTitle','fFacility','fCity','fProvince','fContractType',
+       'fCategory','fSalaryDisplay','fDescription','fRequirements'].forEach(id => {
         document.getElementById(id).value = '';
       });
-      document.getElementById('fStatus').value = 'active';
-      document.getElementById('formTitle').textContent  = 'Post a New Job';
-      document.getElementById('btnSaveJob').textContent = 'Post Job';
+      document.getElementById('fStatus').value          = 'active';
+      document.getElementById('formTitle').textContent   = 'Post a New Job';
+      document.getElementById('btnSaveJob').textContent  = 'Post Job';
       document.getElementById('jobAlert').classList.remove('visible');
       document.getElementById('jobSuccess').classList.remove('visible');
     }
 
-    // ── Update status inline ──────────────────────────────────────────────
-    async function updateJobStatus(id, newStatus) {
+    // ── Archive ───────────────────────────────────────────────────────────
+    async function archiveJob(id, btn) {
+      if (!confirm('Archive this job? It will no longer appear in listings.')) return;
+      btn.disabled    = true;
+      btn.textContent = 'Archiving…';
       try {
-        await fetch(`${API}/api/admin/jobs/${id}/`, {
+        const res = await fetch(`${API}/api/admin/jobs/${id}/`, {
+          method: 'DELETE', credentials: 'include',
+        });
+        if (!res.ok && res.status !== 204) throw new Error();
+        showToast('Job archived.');
+        await loadJobs();
+      } catch (e) {
+        showToast('Failed to archive job. Please try again.', true);
+        btn.disabled    = false;
+        btn.textContent = 'Archive';
+      }
+    }
+
+    // ── Applications ──────────────────────────────────────────────────────
+    async function viewApplications(jobId, jobTitle) {
+      document.getElementById('nav-applications').style.display = '';
+      document.getElementById('applicationsHeading').textContent = `Applications — ${esc(jobTitle)}`;
+      document.getElementById('applicationsTable').innerHTML = '<div class="loading">Loading…</div>';
+      showPanel('applications');
+
+      try {
+        const res = await fetch(`${API}/api/admin/applications/?job=${jobId}`, { credentials: 'include' });
+        if (!res.ok) throw new Error();
+        const apps = await res.json();
+        renderApplicationsTable(apps);
+      } catch (e) {
+        document.getElementById('applicationsTable').innerHTML =
+          '<div class="empty-state">Failed to load applications. Please try again.</div>';
+      }
+    }
+
+    function renderApplicationsTable(apps) {
+      const wrap = document.getElementById('applicationsTable');
+      if (!apps.length) {
+        wrap.innerHTML = '<div class="empty-state">No applications yet for this role.</div>';
+        return;
+      }
+
+      const table  = document.createElement('table');
+      const thead  = table.createTHead();
+      const hRow   = thead.insertRow();
+      ['Applicant', 'Email', 'Applied', 'Cover Note', 'Status'].forEach(h => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        hRow.appendChild(th);
+      });
+
+      const tbody = table.createTBody();
+      const STATUS_OPTIONS = ['applied','shortlisted','placed','rejected'];
+
+      apps.forEach(a => {
+        const row = tbody.insertRow();
+
+        // Applicant name
+        const nameCell = row.insertCell();
+        const strong = document.createElement('strong');
+        strong.textContent = esc(a.nurse_name);
+        nameCell.appendChild(strong);
+
+        row.appendChild(td(a.nurse_email));
+        row.appendChild(td(a.applied_at ? new Date(a.applied_at).toLocaleDateString('en-ZA') : '—'));
+
+        // Cover note — truncated
+        const noteCell = row.insertCell();
+        noteCell.style.cssText = 'max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:.8rem';
+        noteCell.textContent = a.cover_note || '—';
+        noteCell.title = a.cover_note || '';
+
+        // Status inline dropdown
+        const statusCell = row.insertCell();
+        const sel = document.createElement('select');
+        sel.className = 'status-select';
+        STATUS_OPTIONS.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt;
+          o.textContent = opt.charAt(0).toUpperCase() + opt.slice(1);
+          if (opt === a.status) o.selected = true;
+          sel.appendChild(o);
+        });
+        sel.addEventListener('change', () => updateApplicationStatus(a.id, sel.value, sel));
+        statusCell.appendChild(sel);
+      });
+
+      wrap.innerHTML = '';
+      wrap.appendChild(table);
+    }
+
+    // ── Update application status ─────────────────────────────────────────
+    async function updateApplicationStatus(id, newStatus, sel) {
+      const prev = sel.dataset.prev || sel.value;
+      sel.dataset.prev = newStatus;
+      try {
+        const res = await fetch(`${API}/api/admin/applications/${id}/`, {
           method: 'PATCH', credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus }),
         });
-      } catch(e) {
-        alert('Failed to update status. Please try again.');
-        loadJobs();
+        if (!res.ok) throw new Error();
+        showToast('Application status updated.');
+      } catch (e) {
+        sel.value = prev;
+        showToast('Failed to update status.', true);
       }
-    }
-
-    // ── Archive ───────────────────────────────────────────────────────────
-    async function archiveJob(id) {
-      if (!confirm('Archive this job? It will no longer appear in listings.')) return;
-      try {
-        await fetch(`${API}/api/admin/jobs/${id}/`, { method: 'DELETE', credentials: 'include' });
-        await loadJobs();
-      } catch(e) {
-        alert('Failed to archive job. Please try again.');
-      }
-    }
-
-    // ── Navigation ────────────────────────────────────────────────────────
-    const PANEL_TITLES = { jobs: 'Jobs', 'create-job': 'Post a Job' };
-
-    function showPanel(name) {
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.getElementById(`panel-${name}`).classList.add('active');
-      document.querySelectorAll('.nav-item')[['jobs','create-job'].indexOf(name)].classList.add('active');
-      document.getElementById('panelTitle').textContent = PANEL_TITLES[name] || name;
     }
 
     // ── Logout ────────────────────────────────────────────────────────────
+    document.getElementById('btnLogout').addEventListener('click', handleLogout);
+
     async function handleLogout() {
-      try { await fetch(`${API}/api/accounts/logout/`, { method: 'POST', credentials: 'include' }); } catch(e) {}
+      try {
+        await fetch(`${API}/api/accounts/logout/`, { method: 'POST', credentials: 'include' });
+      } catch (_) {}
       localStorage.removeItem('nc_user');
       window.location.href = 'login.html';
     }
+
+    // ── Init ──────────────────────────────────────────────────────────────
+    loadJobs();
   </script>
 
 </body>
