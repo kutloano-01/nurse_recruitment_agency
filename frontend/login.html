@@ -7,10 +7,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root { --navy: #0D1F3C; --white: #F8FAFC; --coral: #E8472A; --sage: #7BA89A; --gray: #94a3b8; }
+    :root { --dark: #1E2D2A; --sage: #7BA89A; --slate: #A6B2B5; --coral: #E8472A; --white: #F8FAFC; --off-white: #EEF2F1; --gray: #94a3b8; }
 
     body {
-      font-family: 'Inter', sans-serif; background: var(--navy);
+      font-family: 'Inter', sans-serif; background: var(--off-white);
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
     }
     .login-wrapper {
@@ -37,18 +37,18 @@
       background: var(--white); padding: 3rem;
       display: flex; flex-direction: column; justify-content: center;
     }
-    .login-form-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: .4rem; }
+    .login-form-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--dark); margin-bottom: .4rem; }
     .login-form-panel > p { font-size: .85rem; color: var(--gray); margin-bottom: 2rem; }
 
     .form-group { margin-bottom: 1.2rem; }
-    .form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--navy); margin-bottom: .4rem; }
+    .form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--dark); margin-bottom: .4rem; }
     .form-group input {
       width: 100%; padding: .7rem 1rem;
       border: 1.5px solid #e2e8f0; border-radius: 6px;
       font-family: 'Inter', sans-serif; font-size: .9rem;
-      color: var(--navy); outline: none; transition: border-color .2s;
+      color: var(--dark); outline: none; transition: border-color .2s;
     }
-    .form-group input:focus { border-color: var(--navy); }
+    .form-group input:focus { border-color: var(--sage); }
     .form-alert {
       padding: .8rem 1rem; border-radius: 6px; font-size: .85rem;
       margin-bottom: 1rem; background: #fef2f2; color: #b91c1c;
@@ -64,7 +64,7 @@
     .btn-login:hover { background: #c73b21; }
     .btn-login:disabled { background: var(--gray); cursor: not-allowed; }
     .login-back { margin-top: 1.5rem; text-align: center; font-size: .83rem; color: var(--gray); }
-    .login-back a { color: var(--navy); font-weight: 600; text-decoration: none; }
+    .login-back a { color: var(--dark); font-weight: 600; text-decoration: none; }
     .login-back a:hover { color: var(--coral); }
   </style>
 </head>

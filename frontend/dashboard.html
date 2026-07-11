@@ -8,52 +8,60 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --navy: #0D1F3C; --white: #F8FAFC; --coral: #E8472A;
-      --sage: #7BA89A; --gray: #94a3b8; --border: #e2e8f0;
-      --bg: #f1f5f9; --text: #1e293b; --muted: #64748b;
+      --dark:      #1E2D2A;
+      --sage:      #7BA89A;
+      --slate:     #A6B2B5;
+      --coral:     #E8472A;
+      --white:     #F8FAFC;
+      --off-white: #EEF2F1;
+      --gray:      #94a3b8;
+      --border:    #e2e8f0;
+      --bg:        var(--off-white);
+      --text:      var(--dark);
+      --muted:     #64748b;
     }
 
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
 
     /* ── Sidebar ── */
     .sidebar {
-      width: 240px; background: var(--navy); display: flex;
+      width: 240px; background: var(--dark); display: flex;
       flex-direction: column; flex-shrink: 0; position: fixed;
       top: 0; left: 0; height: 100vh;
     }
     .sidebar-logo {
       padding: 1.6rem 1.5rem 1.2rem;
       font-family: 'Playfair Display', serif; font-size: 1.3rem;
-      color: var(--white); border-bottom: 1px solid rgba(255,255,255,.08);
+      color: var(--white); border-bottom: 1px solid rgba(255,255,255,.1);
     }
     .sidebar-logo span { color: var(--coral); }
     .sidebar-label {
       padding: .8rem 1.5rem .4rem;
       font-size: .68rem; font-weight: 600; letter-spacing: .08em;
-      color: rgba(255,255,255,.35); text-transform: uppercase;
+      color: rgba(255,255,255,.4); text-transform: uppercase;
     }
     .sidebar nav { flex: 1; padding: .5rem 0; overflow-y: auto; }
     .nav-item {
       display: flex; align-items: center; gap: .75rem;
-      padding: .7rem 1.5rem; color: rgba(255,255,255,.65);
+      padding: .7rem 1.5rem; color: rgba(255,255,255,.6);
       font-size: .875rem; font-weight: 500; cursor: pointer;
       transition: background .15s, color .15s; border: none;
       background: none; width: 100%; text-align: left;
     }
-    .nav-item:hover { background: rgba(255,255,255,.06); color: var(--white); }
-    .nav-item.active { background: rgba(232,71,42,.15); color: var(--white); }
+    .nav-item:hover { background: rgba(255,255,255,.08); color: var(--white); }
+    .nav-item.active { background: rgba(232,71,42,.2); color: var(--white); }
     .nav-item.active svg { color: var(--coral); }
     .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-    .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,.08); }
+    .sidebar-footer { padding: 1rem 1.5rem; border-top: 1px solid rgba(255,255,255,.1); }
     .sidebar-user { font-size: .8rem; color: rgba(255,255,255,.5); margin-bottom: .6rem; }
     .sidebar-user strong { display: block; color: var(--white); font-size: .875rem; }
     .btn-logout {
-      width: 100%; padding: .55rem; background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.65); border: 1px solid rgba(255,255,255,.1);
+      width: 100%; padding: .55rem; background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.15);
       border-radius: 6px; font-size: .8rem; cursor: pointer;
       font-family: 'Inter', sans-serif; transition: background .15s;
     }
-    .btn-logout:hover { background: rgba(255,255,255,.12); color: var(--white); }
+    .btn-logout:hover { background: rgba(255,255,255,.14); color: var(--white); }
 
     /* ── Main ── */
     .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
@@ -61,7 +69,7 @@
       background: var(--white); border-bottom: 1px solid var(--border);
       padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
     }
-    .topbar-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--navy); }
+    .topbar-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--dark); }
     .topbar-sub { font-size: .85rem; color: var(--muted); }
     .content { padding: 2rem; flex: 1; }
 
@@ -73,7 +81,7 @@
     .section-header {
       display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem;
     }
-    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--navy); }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--dark); }
 
     /* ── Table ── */
     .table-wrap { background: var(--white); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
@@ -109,12 +117,12 @@
     .btn-primary:hover { background: #c73b21; }
     .btn-primary:disabled { background: var(--gray); cursor: not-allowed; }
     .btn-secondary {
-      padding: .6rem 1.2rem; background: transparent; color: var(--navy);
+      padding: .6rem 1.2rem; background: transparent; color: var(--dark);
       border: 1.5px solid var(--border); border-radius: 6px;
       font-family: 'Inter', sans-serif; font-weight: 600;
       font-size: .875rem; cursor: pointer; transition: border-color .2s;
     }
-    .btn-secondary:hover { border-color: var(--navy); }
+    .btn-secondary:hover { border-color: var(--dark); }
     .btn-danger {
       padding: .4rem .9rem; background: transparent; color: #b91c1c;
       border: 1.5px solid #fecaca; border-radius: 6px;
@@ -124,30 +132,30 @@
     .btn-danger:hover { background: #fef2f2; border-color: #b91c1c; }
     .btn-danger:disabled { opacity: .5; cursor: not-allowed; }
     .btn-edit {
-      padding: .4rem .9rem; background: transparent; color: var(--navy);
+      padding: .4rem .9rem; background: transparent; color: var(--dark);
       border: 1.5px solid var(--border); border-radius: 6px;
       font-family: 'Inter', sans-serif; font-weight: 600;
       font-size: .78rem; cursor: pointer; transition: all .2s; margin-right: .4rem;
     }
-    .btn-edit:hover { border-color: var(--navy); }
+    .btn-edit:hover { border-color: var(--dark); }
 
     /* ── Form card ── */
     .form-card {
       background: var(--white); border-radius: 10px;
       border: 1px solid var(--border); padding: 2rem; max-width: 720px;
     }
-    .form-card h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--navy); margin-bottom: 1.5rem; }
+    .form-card h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--dark); margin-bottom: 1.5rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-group { margin-bottom: 1.1rem; }
     .form-group.full { grid-column: 1 / -1; }
-    .form-group label { display: block; font-size: .78rem; font-weight: 600; color: var(--navy); margin-bottom: .35rem; }
+    .form-group label { display: block; font-size: .78rem; font-weight: 600; color: var(--dark); margin-bottom: .35rem; }
     .form-group input, .form-group select, .form-group textarea {
       width: 100%; padding: .65rem .9rem;
       border: 1.5px solid var(--border); border-radius: 6px;
       font-family: 'Inter', sans-serif; font-size: .875rem;
       color: var(--text); outline: none; transition: border-color .2s; background: var(--white);
     }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--navy); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--sage); }
     .form-group textarea { resize: vertical; min-height: 90px; }
     .form-alert {
       padding: .75rem 1rem; border-radius: 6px; font-size: .85rem; margin-bottom: 1rem; display: none;
@@ -160,7 +168,7 @@
     /* ── Toast ── */
     #toast {
       position: fixed; bottom: 1.5rem; right: 1.5rem;
-      background: var(--navy); color: var(--white);
+      background: var(--dark); color: var(--white);
       padding: .8rem 1.4rem; border-radius: 8px;
       font-size: .875rem; font-weight: 500;
       box-shadow: 0 4px 20px rgba(0,0,0,.2);
@@ -184,7 +192,7 @@
       font-size: .85rem; font-weight: 600; color: var(--muted);
       background: none; border: none; cursor: pointer; margin-bottom: 1rem; padding: 0;
     }
-    .back-btn:hover { color: var(--navy); }
+    .back-btn:hover { color: var(--dark); }
   </style>
 </head>
 <body>
