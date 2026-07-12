@@ -5,10 +5,10 @@ from django.conf import settings
 def send_nurse_registration_confirmation(user, profile):
     """Send confirmation email to nurse after registration."""
     send_mail(
-        subject='Welcome to NurseConnect — Registration Received',
+        subject="Welcome to Neo's Nursing Agency — Registration Received",
         message=f"""Hi {user.first_name},
 
-Thank you for registering with NurseConnect.
+Thank you for registering with Neo's Nursing Agency.
 
 Your profile has been submitted and is currently under review. Our team will verify your documents and SANC registration within 48 hours.
 
@@ -25,10 +25,10 @@ What happens next?
 3. You will receive an email once your profile is approved
 4. You will then start receiving suitable shift offers
 
-If you have any questions, please contact us at support@nurseconnect.co.za.
+If you have any questions, please contact us at support@neosnursingagency.co.za.
 
 Kind regards,
-The NurseConnect Team
+The Neo's Nursing Agency Team
 """,
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
@@ -65,10 +65,10 @@ http://localhost:3000/frontend/login.html
 def send_employer_registration_confirmation(user, profile):
     """Send confirmation email to employer after registration."""
     send_mail(
-        subject='Welcome to NurseConnect — Staffing Request Received',
+        subject="Welcome to Neo's Nursing Agency — Staffing Request Received",
         message=f"""Hi {user.first_name},
 
-Thank you for registering with NurseConnect.
+Thank you for registering with Neo's Nursing Agency.
 
 Your facility profile and staffing request have been received. A member of our team will be in touch within 24 hours to discuss your requirements.
 
@@ -79,10 +79,10 @@ Your registration details:
 - Facility Type: {profile.get_facility_type_display()}
 - Province: {profile.get_province_display()}
 
-If you have any urgent staffing needs, please contact us directly at placements@nurseconnect.co.za.
+If you have any urgent staffing needs, please contact us directly at placements@neosnursingagency.co.za.
 
 Kind regards,
-The NurseConnect Team
+The Neo's Nursing Agency Team
 """,
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
@@ -94,7 +94,7 @@ def send_employer_registration_admin_notification(user, profile):
     """Notify admin when a new employer registers."""
     send_mail(
         subject=f'New Employer Registration — {profile.facility_name}',
-        message=f"""A new employer has registered on NurseConnect.
+        message=f"""A new employer has registered on Neo's Nursing Agency.
 
 Employer Details:
 - Facility: {profile.facility_name}
@@ -120,7 +120,7 @@ def send_job_application_admin_notification(user, application):
     """Notify admin when a nurse submits a job application."""
     send_mail(
         subject=f'New Job Application — {application.job.title}',
-        message=f"""A nurse has applied for a position on NurseConnect.
+        message=f"""A nurse has applied for a position on Neo's Nursing Agency.
 
 Application Details:
 - Nurse: {user.get_full_name()}
