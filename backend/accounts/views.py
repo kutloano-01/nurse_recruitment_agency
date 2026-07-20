@@ -1,3 +1,4 @@
+from decouple import config
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -62,7 +63,8 @@ class ForgotPasswordView(APIView):
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-            reset_url = f'http://localhost:3000/reset-password.html?uid={uid}&token={token}'
+            frontend_url = config('FRONTEND_URL', default='http://localhost:3000')
+            reset_url = f'{frontend_url}/reset-password.html?uid={uid}&token={token}'
 
             send_mail(
                 subject='NurseConnect — Password Reset Request',
