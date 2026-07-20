@@ -225,7 +225,24 @@
       display: none;
     }
     .jobs { background: var(--white); }
-    .jobs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 2.5rem; }
+    .jobs-filters {
+      display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 2rem;
+      align-items: center;
+    }
+    .jobs-filters select {
+      padding: .5rem .9rem; border: 1.5px solid #e2e8f0; border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: .85rem; color: var(--dark);
+      background: var(--white); cursor: pointer; outline: none; transition: border-color .2s;
+    }
+    .jobs-filters select:focus { border-color: var(--sage); }
+    .btn-filter-reset {
+      padding: .5rem 1rem; background: none; border: 1.5px solid #e2e8f0;
+      border-radius: 6px; font-family: 'Inter', sans-serif; font-size: .85rem;
+      color: var(--gray); cursor: pointer; transition: all .2s;
+    }
+    .btn-filter-reset:hover { border-color: var(--dark); color: var(--dark); }
+    .jobs-count { font-size: .85rem; color: var(--gray); margin-left: auto; }
+    .jobs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 1.5rem; }
     .job-card {
       border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.8rem;
       transition: box-shadow .2s, transform .2s;
@@ -251,6 +268,40 @@
       cursor: pointer; transition: all .2s;
     }
     .btn-outline:hover { background: var(--dark); color: var(--white); }
+
+    /* ── JOB DETAIL MODAL ── */
+    .job-modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(7,15,30,.75); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .job-modal-overlay.active { display: flex; }
+    .job-modal {
+      background: var(--white); border-radius: 12px;
+      width: 100%; max-width: 600px; max-height: 88vh;
+      overflow-y: auto; position: relative;
+      box-shadow: 0 24px 60px rgba(0,0,0,.3);
+    }
+    .job-modal-header {
+      padding: 2rem 2rem 1.2rem;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .job-modal-header h2 { font-size: 1.4rem; color: var(--dark); margin-bottom: .3rem; }
+    .job-modal-meta { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+    .job-modal-meta span {
+      font-size: .78rem; color: #475569; background: #f8fafc;
+      padding: .2rem .65rem; border-radius: 3px; border: 1px solid #e2e8f0;
+    }
+    .job-modal-body { padding: 1.5rem 2rem 2rem; }
+    .job-modal-body h4 { font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--gray); margin: 1.2rem 0 .5rem; }
+    .job-modal-body h4:first-child { margin-top: 0; }
+    .job-modal-body p { font-size: .9rem; color: var(--dark); line-height: 1.7; white-space: pre-wrap; }
+    .job-modal-footer {
+      padding: 1rem 2rem 1.5rem;
+      border-top: 1px solid #f1f5f9;
+      display: flex; gap: .75rem; justify-content: flex-end;
+    }
 
     /* ── HOME CARE ── */
     .homecare {
@@ -887,6 +938,38 @@
     <div class="section-tag">Latest Opportunities</div>
     <h2 class="section-title">Find Your Next Nursing Role</h2>
     <p class="section-sub">Roles updated daily across all nine provinces. Filter by specialty, location, or contract type.</p>
+
+    <div class="jobs-filters" id="jobsFilters" style="display:none">
+      <select id="filterProvince" onchange="applyFilters()">
+        <option value="">All Provinces</option>
+        <option value="GP">Gauteng</option>
+        <option value="WC">Western Cape</option>
+        <option value="KZN">KwaZulu-Natal</option>
+        <option value="EC">Eastern Cape</option>
+        <option value="FS">Free State</option>
+        <option value="LP">Limpopo</option>
+        <option value="MP">Mpumalanga</option>
+        <option value="NC">Northern Cape</option>
+        <option value="NW">North West</option>
+      </select>
+      <select id="filterContract" onchange="applyFilters()">
+        <option value="">All Contract Types</option>
+        <option value="full_time">Full Time</option>
+        <option value="contract">Contract</option>
+        <option value="locum">Locum / Agency</option>
+      </select>
+      <select id="filterCategory" onchange="applyFilters()">
+        <option value="">All Categories</option>
+        <option value="registered">Registered Nurse</option>
+        <option value="enrolled">Enrolled Nurse</option>
+        <option value="auxiliary">Auxiliary Nurse</option>
+        <option value="specialist">Specialist Nurse</option>
+        <option value="midwife">Midwife</option>
+      </select>
+      <button class="btn-filter-reset" onclick="resetFilters()">Clear Filters</button>
+      <span class="jobs-count" id="jobsCount"></span>
+    </div>
+
     <div id="jobsContainer">
       <div id="jobsLoading" style="text-align:center;padding:3rem 0;color:var(--gray);font-size:.95rem;">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:block;margin:0 auto .8rem;opacity:.4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3M4.22 4.22l2.12 2.12m11.32 11.32 2.12 2.12M3 12h3m12 0h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
@@ -904,6 +987,35 @@
       <div class="jobs-grid" id="jobsGrid" style="display:none"></div>
     </div>
   </section>
+
+  <!-- JOB DETAIL MODAL -->
+  <div class="job-modal-overlay" id="jobModal">
+    <div class="job-modal">
+      <div class="job-modal-header">
+        <div style="flex:1">
+          <div id="jmType"></div>
+          <h2 id="jmTitle"></h2>
+          <div style="font-size:.9rem;color:var(--gray);margin-top:.2rem" id="jmFacility"></div>
+          <div class="job-modal-meta" id="jmMeta"></div>
+        </div>
+        <button class="modal-close" onclick="closeJobModal()" style="margin-left:1rem;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="job-modal-body">
+        <h4>About the Role</h4>
+        <p id="jmDescription"></p>
+        <div id="jmRequirementsWrap">
+          <h4>Requirements</h4>
+          <p id="jmRequirements"></p>
+        </div>
+      </div>
+      <div class="job-modal-footer">
+        <button class="btn-outline" onclick="closeJobModal()">Close</button>
+        <button class="btn btn-coral" onclick="closeJobModal(); openNurseModal(event)">Apply Now</button>
+      </div>
+    </div>
+  </div>
 
   <!-- HOME CARE -->
   <section class="homecare" id="homecare">
@@ -1593,48 +1705,166 @@
 
   <script>
     // ── JOB LISTINGS ──
-    const CONTRACT_LABELS = { full_time: 'Full Time', contract: 'Contract', locum: 'Agency' };
+    const CONTRACT_LABELS  = { full_time: 'Full Time', contract: 'Contract', locum: 'Locum / Agency' };
     const CONTRACT_CLASSES = { full_time: 'type-full', contract: 'type-contract', locum: 'type-agency' };
+    const CATEGORY_LABELS  = {
+      registered: 'Registered Nurse', enrolled: 'Enrolled Nurse',
+      auxiliary: 'Auxiliary Nurse', specialist: 'Specialist Nurse', midwife: 'Midwife'
+    };
     const PROVINCE_NAMES = {
       GP: 'Gauteng', WC: 'Western Cape', KZN: 'KwaZulu-Natal', EC: 'Eastern Cape',
       FS: 'Free State', LP: 'Limpopo', MP: 'Mpumalanga', NC: 'Northern Cape', NW: 'North West'
     };
-    const PIN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+
+    let allJobs = [];
+
+    function esc(str) {
+      const d = document.createElement('div');
+      d.textContent = String(str ?? '');
+      return d.innerHTML;
+    }
 
     async function loadJobs() {
       document.getElementById('jobsLoading').style.display = 'block';
-      document.getElementById('jobsError').style.display = 'none';
-      document.getElementById('jobsEmpty').style.display = 'none';
-      document.getElementById('jobsGrid').style.display = 'none';
+      document.getElementById('jobsError').style.display   = 'none';
+      document.getElementById('jobsEmpty').style.display   = 'none';
+      document.getElementById('jobsGrid').style.display    = 'none';
+      document.getElementById('jobsFilters').style.display = 'none';
 
       try {
         const res = await fetch('http://127.0.0.1:8000/api/jobs/');
         if (!res.ok) throw new Error();
-        const jobs = await res.json();
+        allJobs = await res.json();
         document.getElementById('jobsLoading').style.display = 'none';
-        if (!jobs.length) {
+        if (!allJobs.length) {
           document.getElementById('jobsEmpty').style.display = 'block';
           return;
         }
-        const grid = document.getElementById('jobsGrid');
-        grid.innerHTML = jobs.map(job => `
-          <div class="job-card">
-            <span class="job-type ${CONTRACT_CLASSES[job.contract_type] || 'type-full'}">${CONTRACT_LABELS[job.contract_type] || job.contract_type}</span>
-            <h3>${job.title}</h3>
-            <p class="location">${PIN_SVG}${job.facility_name}, ${job.city}</p>
-            <div class="job-meta">
-              <span style="text-transform:capitalize">${job.nursing_category}</span>
-              ${job.salary_display ? `<span>${job.salary_display}</span>` : ''}
-              <span>${PROVINCE_NAMES[job.province] || job.province}</span>
-            </div>
-            <button class="btn-outline" onclick="openNurseModal(event)">View &amp; Apply</button>
-          </div>`).join('');
-        grid.style.display = 'grid';
+        document.getElementById('jobsFilters').style.display = 'flex';
+        renderJobs(allJobs);
       } catch(e) {
         document.getElementById('jobsLoading').style.display = 'none';
-        document.getElementById('jobsError').style.display = 'block';
+        document.getElementById('jobsError').style.display   = 'block';
       }
     }
+
+    function renderJobs(jobs) {
+      const grid = document.getElementById('jobsGrid');
+      const count = document.getElementById('jobsCount');
+
+      if (!jobs.length) {
+        grid.style.display = 'none';
+        document.getElementById('jobsEmpty').style.display = 'block';
+        count.textContent = 'No roles match your filters';
+        return;
+      }
+
+      document.getElementById('jobsEmpty').style.display = 'none';
+      count.textContent = `${jobs.length} role${jobs.length !== 1 ? 's' : ''} found`;
+
+      grid.innerHTML = '';
+      jobs.forEach(job => {
+        const card = document.createElement('div');
+        card.className = 'job-card';
+
+        const badge = document.createElement('span');
+        badge.className = `job-type ${CONTRACT_CLASSES[job.contract_type] || 'type-full'}`;
+        badge.textContent = CONTRACT_LABELS[job.contract_type] || job.contract_type;
+
+        const title = document.createElement('h3');
+        title.textContent = job.title;
+
+        const loc = document.createElement('p');
+        loc.className = 'location';
+        loc.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+        loc.appendChild(document.createTextNode(`${job.facility_name}, ${job.city}`));
+
+        const meta = document.createElement('div');
+        meta.className = 'job-meta';
+        const metaItems = [
+          CATEGORY_LABELS[job.nursing_category] || job.nursing_category,
+          PROVINCE_NAMES[job.province] || job.province,
+          job.salary_display || null,
+        ];
+        metaItems.forEach(text => {
+          if (!text) return;
+          const s = document.createElement('span');
+          s.textContent = text;
+          meta.appendChild(s);
+        });
+
+        const btn = document.createElement('button');
+        btn.className = 'btn-outline';
+        btn.textContent = 'View & Apply';
+        btn.addEventListener('click', () => openJobModal(job));
+
+        card.append(badge, title, loc, meta, btn);
+        grid.appendChild(card);
+      });
+
+      grid.style.display = 'grid';
+    }
+
+    function applyFilters() {
+      const province = document.getElementById('filterProvince').value;
+      const contract = document.getElementById('filterContract').value;
+      const category = document.getElementById('filterCategory').value;
+
+      const filtered = allJobs.filter(j =>
+        (!province || j.province === province) &&
+        (!contract || j.contract_type === contract) &&
+        (!category || j.nursing_category === category)
+      );
+      renderJobs(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('filterProvince').value = '';
+      document.getElementById('filterContract').value = '';
+      document.getElementById('filterCategory').value = '';
+      renderJobs(allJobs);
+    }
+
+    // ── Job detail modal ──
+    function openJobModal(job) {
+      document.getElementById('jmType').innerHTML = `<span class="job-type ${CONTRACT_CLASSES[job.contract_type] || 'type-full'}" style="margin-bottom:.6rem;display:inline-block">${esc(CONTRACT_LABELS[job.contract_type] || job.contract_type)}</span>`;
+      document.getElementById('jmTitle').textContent      = job.title;
+      document.getElementById('jmFacility').textContent   = `${job.facility_name} · ${job.city}`;
+      document.getElementById('jmDescription').textContent = job.description;
+
+      const reqWrap = document.getElementById('jmRequirementsWrap');
+      if (job.requirements) {
+        document.getElementById('jmRequirements').textContent = job.requirements;
+        reqWrap.style.display = 'block';
+      } else {
+        reqWrap.style.display = 'none';
+      }
+
+      const meta = document.getElementById('jmMeta');
+      meta.innerHTML = '';
+      [
+        CATEGORY_LABELS[job.nursing_category] || job.nursing_category,
+        PROVINCE_NAMES[job.province] || job.province,
+        job.salary_display || null,
+      ].forEach(text => {
+        if (!text) return;
+        const s = document.createElement('span');
+        s.textContent = text;
+        meta.appendChild(s);
+      });
+
+      document.getElementById('jobModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeJobModal() {
+      document.getElementById('jobModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('jobModal').addEventListener('click', function(e) {
+      if (e.target === this) closeJobModal();
+    });
 
     document.addEventListener('DOMContentLoaded', loadJobs);
   </script>
